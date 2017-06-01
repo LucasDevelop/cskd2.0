@@ -1,0 +1,26 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.Design.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorMain</item>
+        <item name="colorPrimaryDark">@color/colorMain</item>
+        <item name="colorAccent">@color/colorMain</item>
+    </style>
+    <!--文本编辑器的样式-->
+    <style name="Edit">
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:background">@drawable/edit_bg</item>
+    </style>
+    <style name="NextBt">
+        <item name="android:background">@drawable/bt_blue</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="EditNormal">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorHint">@color/text_hint</item>
+    </style>
+</resources>

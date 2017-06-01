@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    tools:context=".module.login.activity.ForgetActivity">
+
+    <ImageView
+        android:id="@+id/top_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="39dp"
+        android:src="@mipmap/forget_code"/>
+
+    <TextView
+        android:id="@+id/inputcode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/top_img"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="17dp"
+        android:text="输入验证码"
+        android:textColor="@color/colorMain"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/inputcode"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="11dp"
+        android:text="请输入188***1154的短信4位验证码"
+        android:textColor="#bbb"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/number"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="60dp"
+        android:orientation="vertical">
+
+        <EditText
+            android:paddingBottom="10dp"
+            android:id="@+id/phone"
+            tools:text="1234"
+            android:gravity="center"
+            style="@style/EditNormal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/layer_bottom_divide"/>
+
+        <Button
+            android:id="@+id/next"
+            style="@style/NextBt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="@string/next"/>
+    </LinearLayout>
+</RelativeLayout>
