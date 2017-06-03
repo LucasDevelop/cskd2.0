@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@mipmap/select_bt" android:state_checked="true"/>
-    <item android:drawable="@drawable/bt_layer_gray" android:state_checked="false"/>
-    <item android:drawable="@drawable/bt_layer_gray"/>
+    <item android:drawable="@mipmap/select_normol" android:state_checked="false"/>
+    <item android:drawable="@mipmap/select_normol"/>
 </selector>

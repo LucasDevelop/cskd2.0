@@ -25,17 +25,12 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     // >Retrofit & OkHttp
-//    compile('com.squareup.retrofit2:retrofit:2.0.0-beta3') {
-//        // exclude Retrofit’s OkHttp peer-dependency module and define your own module import
-//        exclude module: 'okhttp'
-//    }
-//    compile 'com.squareup.okhttp3:okhttp:3.0.1'
-//    compile 'com.squareup.retrofit2:converter-gson:2.0.0-beta4'
-
-
-    
-
-
+    //    compile('com.squareup.retrofit2:retrofit:2.0.0-beta3') {
+    //        // exclude Retrofit’s OkHttp peer-dependency module and define your own module import
+    //        exclude module: 'okhttp'
+    //    }
+    //    compile 'com.squareup.okhttp3:okhttp:3.0.1'
+    //    compile 'com.squareup.retrofit2:converter-gson:2.0.0-beta4'
     compile 'com.squareup.retrofit2:converter-gson:2.2.0'
     compile 'com.squareup.retrofit2:adapter-rxjava2:2.2.0'
     compile 'com.squareup.okhttp3:okhttp:3.6.0'
@@ -47,4 +42,5 @@ dependencies {
     compile 'com.android.support:design:26.0.0-alpha1'
     compile 'com.kyleduo.switchbutton:library:1.4.6'
     testCompile 'junit:junit:4.12'
+    compile files('libs/AMap_Location_V3.4.0_20170427.jar')
 }

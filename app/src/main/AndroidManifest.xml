@@ -30,10 +30,9 @@
         <activity android:name=".module.login.activity.RegisterSetup0Activity"/>
         <activity android:name=".module.login.activity.RegisterSetup1Activity"/>
         <activity android:name=".module.login.activity.RegisterSetup2Activity"/>
-        <activity android:name=".module.personal.PersonalActivity">
-        </activity>
-        <activity android:name=".module.main.activity.ModeSettingActivity">
-        </activity>
+        <activity android:name=".module.personal.activity.ScheduleActivity"/>
+        <activity android:name=".module.main.activity.ModeSettingActivity"/>
+        <activity android:name=".module.main.activity.MapNavActivity"/>
     </application>
 
 </manifest>

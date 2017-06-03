@@ -39,6 +39,7 @@ public class RippleButton extends LinearLayout implements View.OnClickListener {
 
     };
     private boolean mIsStart;
+    private OnClickListener mListener;
 
     public RippleButton(Context context) {
         super(context);
@@ -121,8 +122,13 @@ public class RippleButton extends LinearLayout implements View.OnClickListener {
             cancelWaveAnimation();
     }
 
+    public void setOnclickListener1(OnClickListener listener){
+        mListener = listener;
+    }
+
     @Override
     public void onClick(View v) {
+        mListener.onClick(v);
         if (!mIsStart)
             showWaveAnimation();
     }

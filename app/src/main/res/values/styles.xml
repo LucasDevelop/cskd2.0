@@ -48,4 +48,9 @@
         <item name="android:textColor">#fff</item>
         <item name="android:textSize">18sp</item>
     </style>
+
+    <style name="roomRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/rating_bar</item>
+        <item name="android:minHeight">80dp</item>
+    </style>
 </resources>

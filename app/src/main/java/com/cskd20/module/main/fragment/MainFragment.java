@@ -9,7 +9,9 @@ import android.widget.ImageView;
 
 import com.cskd20.R;
 import com.cskd20.base.BaseFragment;
+import com.cskd20.module.main.activity.MapNavActivity;
 import com.cskd20.module.main.activity.ModeSettingActivity;
+import com.cskd20.view.RippleButton;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -25,10 +27,23 @@ public class MainFragment extends BaseFragment {
     ImageView mModelSetting;
     @Bind(R.id.order)
     ImageView mOrder;
+    @Bind(R.id.search)
+    RippleButton mSearch;
+
 
     @Override
     public void initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mSearch.setOnclickListener1(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startSearch();
+            }
+        });
+    }
 
+
+    private void startSearch() {
+        startActivity(new Intent(getActivity(), MapNavActivity.class));
     }
 
     @Override

@@ -10,7 +10,7 @@ import com.cskd20.base.BaseActivity;
 import com.cskd20.base.BaseFragment;
 import com.cskd20.module.main.adapter.MainFragmentAdapter;
 import com.cskd20.module.main.fragment.MainFragment;
-import com.cskd20.module.main.fragment.PersonalFragment;
+import com.cskd20.module.personal.fragment.PersonalFragment;
 import com.cskd20.module.main.fragment.ServerFragment;
 
 import java.util.ArrayList;
@@ -48,5 +48,8 @@ public class MainActivity extends BaseActivity {
         mTab.setTabMode(TabLayout.MODE_FIXED);
         mViewPager.setAdapter(fragmentAdapter);
         mTab.setupWithViewPager(mViewPager);
+
+        //默认选中首页
+        mTab.getTabAt(1).select();
     }
 }
