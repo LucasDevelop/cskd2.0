@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import butterknife.ButterKnife;
+
 /**
  * @创建者 lucas
  * @创建时间 2017/5/26 0026 9:58
@@ -14,12 +16,19 @@ import android.view.ViewGroup;
  */
 
 public abstract class BaseFragment extends Fragment {
+    private View mLayoutID;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
             savedInstanceState) {
-        return initView(inflater,container,savedInstanceState);
+        View view = getLayoutView();
+        ButterKnife.bind(this,view);
+        initView(inflater, container, savedInstanceState);
+        return view;
     }
 
-    public abstract View initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
+    public abstract void initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
+
+    public abstract View getLayoutView() ;
 }

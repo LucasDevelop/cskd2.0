@@ -33,16 +33,29 @@ import java.io.InputStream;
 public class CommonUtil {
 
     /**
+     * uri -> filename
+     * @param context
+     * @param uri
+     * @return
+     */
+    public static String getUri2Filename(Context context,Uri uri){
+        String filePath = CommonUtil.getRealPathFromURI(context, uri);
+        return filePath.substring(filePath.lastIndexOf("/") + 1, filePath.length());
+    }
+
+
+    /**
      * uri _>path
+     *
      * @param context
      * @param contentUri
      * @return
      */
-    public static String getRealPathFromURI(Context context,Uri contentUri) {
+    public static String getRealPathFromURI(Context context, Uri contentUri) {
         String res = null;
-        String[] proj = { MediaStore.Images.Media.DATA };
+        String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             res = cursor.getString(column_index);
         }
@@ -60,10 +73,10 @@ public class CommonUtil {
     }
 
     //截取手机号
-    public static String subMobile(String mobile){
+    public static String subMobile(String mobile) {
         if (TextUtils.isEmpty(mobile))
             return null;
-        return mobile.substring(0,3)+"****"+mobile.substring(7);
+        return mobile.substring(0, 3) + "****" + mobile.substring(7);
     }
 
     /**
@@ -104,19 +117,20 @@ public class CommonUtil {
         return spannable;
     }
 
-    public static void getBitmapFormUri(Activity ac, Uri uri, ImageView imageView) throws FileNotFoundException, IOException{
+    public static void getBitmapFormUri(Activity ac, Uri uri, ImageView imageView) throws FileNotFoundException,
+            IOException {
 
         Bitmap bitmap = getBitmapFormUri(ac, uri);
-        if (bitmap==null||imageView ==null) {
+        if (bitmap == null || imageView == null) {
             Log.e("CommonUtil", "bitmap = null||imageView ==null");
             return;
         }
         imageView.setImageBitmap(bitmap);
     }
 
-    public static void getBitmapFormUri(Activity ac, Uri uri, ViewGroup view) throws IOException{
+    public static void getBitmapFormUri(Activity ac, Uri uri, ViewGroup view) throws IOException {
         Bitmap bitmap = getBitmapFormUri(ac, uri);
-        if (bitmap==null||view ==null) {
+        if (bitmap == null || view == null) {
             Log.e("CommonUtil", "bitmap = null||imageView ==null");
             return;
         }

@@ -7,15 +7,15 @@ package com.cskd20.utils;
  */
 
 public interface Constants {
-    long CONN_TIME_OUT = 1000 * 100;
-    long READ_TIME_OUT = 1000 * 100;
+    long CONN_TIME_OUT = 1000 * 20;
+    long READ_TIME_OUT = 1000 * 20;
     //日志等级
     int DEBUGLEVEL = LogUtils.LEVEL_VERBOSE;
 
     //域名
-    String URI = "http://www.chengshikuaidao.com/index.php/Api/";
+    String URI = "http://www.chengshikuaidao.com:8080/index.php/Api/";
     //本地域名
-    String TEST_URI = "http://www.chengshikuaidao.com:8080/index.php/Api/";
+    String TEST_URI = "http://www.chengshikuaidao.com:6060/index.php/Api/";
 
     //登录接口
     String LOGIN = "ApiDriver/login";
@@ -29,6 +29,18 @@ public interface Constants {
     //检查验证码
     String CHECK_PHONE = "ApiDriver/checkPhone";
 
+    //校验验证码
+    String CHECK_CODE = "ApiDriver/checkCode";
+
     //图片上传
     String UPLOAD_IMG = "ApiDriver/upload_pic";
+
+    //修改密码
+    String MIDF_PWD = "ApiDriver/change_password";
+
+    //车型
+    String CAR_TYPE = "ApiDriver/get_cars";
+
+    //司机注册
+    String DRIVE_REGISTER = "ApiDriver/drive_register";
 }

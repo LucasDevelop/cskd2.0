@@ -15,12 +15,21 @@ import android.widget.Toast;
 
 import com.cskd20.R;
 import com.cskd20.base.BaseActivity;
+import com.cskd20.bean.ImageTag;
+import com.cskd20.bean.InfoBean;
+import com.cskd20.factory.CallBack;
 import com.cskd20.popup.PictureSelectPopup;
 import com.cskd20.utils.CommonUtil;
+import com.cskd20.utils.ResponseUtil;
+import com.cskd20.utils.SPUtils;
 import com.google.gson.JsonObject;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Random;
 
 import butterknife.Bind;
@@ -70,6 +79,9 @@ public class RegisterSetup2Activity extends BaseActivity implements View.OnClick
     LinearLayout   mTemp2;
     @Bind(R.id.temp3)
     LinearLayout   mTemp3;
+    private InfoBean mInfo;//个人信息
+    private static final int SUCCESS = 1;//上传成功
+    private static final int FAILED  = 0;//上传失败
 
     @Override
     protected int setContentView() {
@@ -78,26 +90,91 @@ public class RegisterSetup2Activity extends BaseActivity implements View.OnClick
 
     @Override
     protected void initView(@Nullable Bundle savedInstanceState) {
+        mInfo = (InfoBean) getIntent().getSerializableExtra("info");
     }
 
-    @OnClick({R.id.photo1, R.id.photo2, R.id.photo3})
+    @OnClick({R.id.photo1, R.id.photo2, R.id.photo3, R.id.next})
     public void onClickUpload(View view) {
         switch (view.getId()) {
-            case R.id.photo1:
+            case R.id.photo1://身份证
                 mCurrentPhoto = PHOTO1;
                 showSelectPhotoPopup();
                 break;
-            case R.id.photo2:
+            case R.id.photo2://驾照
                 mCurrentPhoto = PHOTO2;
                 showSelectPhotoPopup();
                 break;
-            case R.id.photo3:
+            case R.id.photo3://行驶证
                 mCurrentPhoto = PHOTO3;
                 showSelectPhotoPopup();
+                break;
+            case R.id.next:
+                submit();
                 break;
             default:
                 break;
         }
+    }
+
+    //提交注册信息
+    private void submit() {
+        //检查图片是否上传成功
+        ImageTag mPhoto1Tag = (ImageTag) mPhoto1.getTag();
+        if (mPhoto1Tag.status == FAILED) {
+            Toast.makeText(mContext, "请上传身份证照片", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        ImageTag mPhoto2Tag = (ImageTag) mPhoto2.getTag();
+        if (mPhoto2Tag.status == FAILED) {
+            Toast.makeText(mContext, "请上传驾驶证照片", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        ImageTag mPhoto3Tag = (ImageTag) mPhoto3.getTag();
+        if (mPhoto3Tag.status == FAILED) {
+            Toast.makeText(mContext, "请上传行驶证照片", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mInfo.id_card_logo = mPhoto1Tag.url;
+        mInfo.driver_no_logo = mPhoto2Tag.url;
+        mInfo.driving_logo = mPhoto3Tag.url;
+        mInfo.token = (String) SPUtils.get(mContext,"token","");
+
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put("realname",mInfo.realname);
+        map.put("id_card",mInfo.id_card);
+        map.put("id_card_logo",mInfo.id_card_logo);
+        map.put("driver_no_logo",mInfo.driver_no_logo);
+        map.put("driving_logo",mInfo.driving_logo);
+        map.put("car_brand",mInfo.car_brand);
+        map.put("car_series",mInfo.car_series);
+        map.put("car_color",mInfo.car_color);
+        map.put("city",mInfo.city);
+        map.put("driving",mInfo.driving);
+        map.put("token",mInfo.token);
+        map.put("car_owner",mInfo.car_owner);
+        map.put("start_insurance",mInfo.start_insurance);
+        map.put("end_insurance",mInfo.end_insurance);
+        map.put("car_regist_time",mInfo.car_regist_time);
+
+        mApi.driveRegister(map).enqueue(new CallBack<JsonObject>() {
+            @Override
+            public void onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
+                Toast.makeText(mContext, ResponseUtil.getMsg(response.body()), Toast.LENGTH_SHORT).show();
+                JSONObject jsonObject = ResponseUtil.Jsb2JSb(response.body());
+                try {
+                    String token = jsonObject.getJSONObject("data").getString("token");
+                    SPUtils.put(mContext,"token",token);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure1(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
     }
 
     //显示popup
@@ -175,6 +252,8 @@ public class RegisterSetup2Activity extends BaseActivity implements View.OnClick
                 mTemp3.setVisibility(View.GONE);
                 break;
         }
+        ImageTag imageTag = new ImageTag();
+        tempView.setTag(imageTag);
         try {
             CommonUtil.getBitmapFormUri(this, uri, tempView);
         } catch (IOException e) {
@@ -182,14 +261,12 @@ public class RegisterSetup2Activity extends BaseActivity implements View.OnClick
         }
 
         //上传图片
-        uploadPic(uri);
+        uploadPic(uri, tempView);
     }
 
     //上传图片
-    private void uploadPic(Uri uri) {
-        File file = new File(CommonUtil
-                .getRealPathFromURI(mContext, uri));
-        RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+    private void uploadPic(final Uri uri, final RelativeLayout tempView) {
+        File file = new File(CommonUtil.getRealPathFromURI(mContext, uri));
         // 创建 RequestBody，用于封装构建RequestBody
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         String filePath = CommonUtil.getRealPathFromURI(mContext, uri);
@@ -200,11 +277,26 @@ public class RegisterSetup2Activity extends BaseActivity implements View.OnClick
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 Log.d("lucas", "json:" + response.body().toString());
+                int status = ResponseUtil.getStatus(response.body());
+                ImageTag tag = (ImageTag) tempView.getTag();
+                if (status == 1) {
+                    //上传成功
+                    tag.status = SUCCESS;
+                    tag.url = CommonUtil.getUri2Filename(getApplicationContext(), uri);
+                } else {
+                    tag.status = FAILED;
+                }
+                tempView.setTag(tag);
+                Toast.makeText(mContext, ResponseUtil.getMsg(response.body()), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+                ImageTag tag = (ImageTag) tempView.getTag();
+                tag.status = FAILED;
+                tempView.setTag(tag);
                 t.printStackTrace();
+                Toast.makeText(mContext, "上传失败", Toast.LENGTH_SHORT).show();
             }
         });
     }

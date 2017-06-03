@@ -33,12 +33,13 @@
 
         <EditText
             android:id="@+id/login_username"
-            style="@style/EditNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="26dp"
             android:layout_weight="1"
+            android:background="@null"
             android:hint="请输入手机号"
+            android:padding="10dp"
             tools:text="18825204205"
             />
     </LinearLayout>
@@ -63,14 +64,15 @@
             android:src="@mipmap/ic_password"/>
 
         <EditText
-            android:elevation="3dp"
             android:id="@+id/login_pwd"
-            style="@style/EditNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="26dp"
             android:layout_weight="1"
+            android:background="@null"
+            android:elevation="3dp"
             android:hint="请输入密码6-16位"
+            android:padding="10dp"
             />
     </LinearLayout>
 
@@ -84,20 +86,13 @@
         android:textColor="#c2c2c2"/>
 
     <Button
-        android:elevation="3dp"
         android:id="@+id/login_submit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/bt_blue"
+        style="@style/submitBt"
+        android:elevation="3dp"
         android:text="登录"
-        android:textColor="#fff"
-        android:textSize="18sp"/>
+        />
 
     <Button
-        android:elevation="3dp"
         android:id="@+id/register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -105,6 +100,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/bt_layer_blue"
+        android:elevation="3dp"
         android:text="注册"
         android:textColor="@color/colorMain"
         android:textSize="18sp"/>

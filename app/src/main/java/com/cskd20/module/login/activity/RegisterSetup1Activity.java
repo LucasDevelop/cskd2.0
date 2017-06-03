@@ -6,6 +6,7 @@ import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -15,8 +16,13 @@ import android.widget.Toast;
 import com.bigkoo.pickerview.TimePickerView;
 import com.cskd20.R;
 import com.cskd20.base.BaseActivity;
+import com.cskd20.bean.CarType2Bean;
+import com.cskd20.bean.CarTypeBean;
 import com.cskd20.bean.InfoBean;
+import com.cskd20.factory.CallBack;
+import com.cskd20.factory.CommonFactory;
 import com.cskd20.utils.SPUtils;
+import com.google.gson.JsonObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,9 +31,11 @@ import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Response;
 
 
-public class RegisterSetup1Activity extends BaseActivity {
+public class RegisterSetup1Activity extends BaseActivity implements AdapterView.OnItemSelectedListener {
 
 
     @Bind(R.id.brand)
@@ -58,6 +66,8 @@ public class RegisterSetup1Activity extends BaseActivity {
     @Bind(R.id.car_register_date)
     TextView mCarRegisterDate;//车辆注册日期
     private InfoBean mInfoBean;
+    private ArrayList<String> mList1 = new ArrayList<>();
+    private ArrayList<String> mList2 = new ArrayList<>();
 
     @Override
     protected int setContentView() {
@@ -66,27 +76,67 @@ public class RegisterSetup1Activity extends BaseActivity {
 
     @Override
     protected void initView(@Nullable Bundle savedInstanceState) {
-        initSpinner();
+        initDate();
+        mBrand.setOnItemSelectedListener(this);
     }
 
-    private void initSpinner() {
-        ArrayList<String> list = new ArrayList<>();
-        list.add("1");
-        list.add("2");
-        list.add("3");
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, list);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mBrand.setAdapter(adapter);
-        mClazz.setAdapter(adapter);
-        mColor.setAdapter(adapter);
+    //获取车辆类型
+    private void initDate() {
+        mApi.getCarType("").enqueue(new CallBack<JsonObject>() {
+            @Override
+            public void onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
+                CarTypeBean bean = CommonFactory.getGsonInstance().fromJson(response.body().toString(),
+                        CarTypeBean.class);
+                mList1.add("品牌");
+                for (int i = 0; i < bean.data.size(); i++) {
+                    mList1.add(bean.data.get(i).make_name);
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout
+                        .test_list_item, mList1);
+                adapter.setDropDownViewResource(android.R.layout.test_list_item);
+                mBrand.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure1(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+
     }
+
+    //请求二级菜单
+    private void load2Menu(String s) {
+        mApi.getCarType(s).enqueue(new CallBack<JsonObject>() {
+            @Override
+            public void onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
+                CarType2Bean bean = CommonFactory.getGsonInstance().fromJson(response.body().toString(),
+                        CarType2Bean.class);
+                mList2.clear();
+                mList2.add("类型");
+                for (int i = 0; i < bean.data.size(); i++) {
+                    mList2.add(bean.data.get(i).model_name);
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout
+                        .test_list_item, mList2);
+                adapter.setDropDownViewResource(android.R.layout.test_list_item);
+                mClazz.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure1(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+    }
+
 
     @OnClick({R.id.next, R.id.insurance_start, R.id.insurance_end, R.id.car_register_date})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.next:
-                //                saveInfo();
-                startActivity(new Intent(this, RegisterSetup2Activity.class));
+//                saveInfo();
+                                startActivity(new Intent(this, RegisterSetup2Activity.class));
                 break;
             case R.id.insurance_start://车险起始时间
                 showPickerDate(R.id.insurance_start);
@@ -112,6 +162,9 @@ public class RegisterSetup1Activity extends BaseActivity {
         String carRegisterDate = mCarRegisterDate.getText().toString().trim();
         String insuranceStart = mInsuranceStart.getText().toString().trim();
         String insuranceEnd = mInsuranceEnd.getText().toString().trim();
+        String brand = mBrand.getSelectedItem().toString().trim();
+        String clzz = mClazz.getSelectedItem().toString().trim();
+        String color = mColor.getSelectedItem().toString().trim();
         //验证
         String msg = null;
         if (TextUtils.isEmpty(name))
@@ -134,7 +187,12 @@ public class RegisterSetup1Activity extends BaseActivity {
             msg = "请选择车险起始日期";
         if (insuranceEnd.contains("-"))
             msg = "请选择车险结束日期";
-
+        if (TextUtils.isEmpty(brand)||brand.equals("品牌"))
+            msg = "请选择汽车品牌";
+        if (TextUtils.isEmpty(clzz)||clzz.equals("类型"))
+            msg = "请选择汽车类型";
+        if (TextUtils.isEmpty(color)||color.equals("颜色"))
+            msg = "请选择汽车颜色";
         if (msg != null) {
             Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
             return;
@@ -143,18 +201,18 @@ public class RegisterSetup1Activity extends BaseActivity {
         mInfoBean = new InfoBean();
         mInfoBean.realname = name;
         mInfoBean.id_card = code;
-//        mInfoBean.car_brand =
-        //        mInfoBean.car_series =
-        //        mInfoBean.car_color =
+        mInfoBean.car_brand = brand;
+        mInfoBean.car_series = clzz;
+        mInfoBean.car_color = color;
         mInfoBean.city = city;
         mInfoBean.driving = age;
-        mInfoBean.token = (String) SPUtils.get(mContext,"token","");
+        mInfoBean.token = (String) SPUtils.get(mContext, "token", "");
         mInfoBean.car_owner = ownerName;
         mInfoBean.start_insurance = insuranceStart;
         mInfoBean.end_insurance = insuranceEnd;
         mInfoBean.car_regist_time = carRegisterDate;
         Intent intent = new Intent(this, RegisterSetup2Activity.class);
-        intent.putExtra("info",mInfoBean);
+        intent.putExtra("info", mInfoBean);
         startActivity(intent);
     }
 
@@ -175,4 +233,13 @@ public class RegisterSetup1Activity extends BaseActivity {
     }
 
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        load2Menu(mList1.get(position+1));
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 }

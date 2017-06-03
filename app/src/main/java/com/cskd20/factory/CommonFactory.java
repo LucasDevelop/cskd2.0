@@ -3,6 +3,7 @@ package com.cskd20.factory;
 import com.cskd20.api.ApiService;
 import com.cskd20.utils.Constants;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.concurrent.TimeUnit;
 
@@ -41,7 +42,7 @@ public abstract class CommonFactory {
         if (gson == null)
             synchronized (CommonFactory.class) {
                 if (gson == null)
-                    gson = new Gson();
+                    gson = new GsonBuilder().serializeNulls().create();
             }
         return gson;
     }

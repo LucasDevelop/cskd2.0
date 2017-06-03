@@ -21,6 +21,7 @@
         android:textSize="14sp"/>
 
     <include layout="@layout/register_setup"/>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -29,9 +30,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -56,12 +54,12 @@
 
                     <EditText
                         android:id="@+id/name"
+                        style="@style/Edit2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_weight="2"
-                        android:hint="请填写真实姓名"
-                        style="@style/EditNormal"/>
+                        android:hint="请填写真实姓名"/>
                 </LinearLayout>
 
                 <View
@@ -72,27 +70,27 @@
                     android:background="#F0F0F0"/>
 
                 <!--<LinearLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:orientation="horizontal">-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="horizontal">-->
 
-                    <!--<TextView-->
-                        <!--android:layout_width="0dp"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:gravity="end"-->
-                        <!--android:text="电话"-->
-                        <!--android:textColor="@color/black"-->
-                        <!--android:textSize="17sp"/>-->
+                <!--<TextView-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="end"-->
+                <!--android:text="电话"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:textSize="17sp"/>-->
 
-                    <!--<EditText-->
-                        <!--android:id="@+id/phone"-->
-                        <!--android:layout_width="0dp"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_marginLeft="20dp"-->
-                        <!--android:layout_weight="2"-->
-                        <!--android:hint="请填写有效电话"-->
-                        <!--android:textColorHint="@color/text_hint"/>-->
+                <!--<EditText-->
+                <!--android:id="@+id/phone"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="20dp"-->
+                <!--android:layout_weight="2"-->
+                <!--android:hint="请填写有效电话"-->
+                <!--android:textColorHint="@color/text_hint"/>-->
                 <!--</LinearLayout>-->
 
                 <View
@@ -118,13 +116,13 @@
 
                     <EditText
                         android:id="@+id/code"
+                        style="@style/Edit2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_weight="2"
-                        android:inputType="number"
                         android:hint="请填写身份证号"
-                        style="@style/EditNormal"/>
+                        android:inputType="number"/>
                 </LinearLayout>
 
                 <View
@@ -150,12 +148,12 @@
 
                     <EditText
                         android:id="@+id/age"
+                        style="@style/Edit2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_weight="2"
-                        android:hint="按照初次驾照日期算起"
-                        style="@style/EditNormal"/>
+                        android:hint="按照初次驾照日期算起"/>
                 </LinearLayout>
 
                 <View
@@ -181,12 +179,12 @@
 
                     <EditText
                         android:id="@+id/city"
+                        style="@style/Edit2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_weight="2"
-                        android:hint="请填写工作的城市"
-                        style="@style/EditNormal"/>
+                        android:hint="请填写工作的城市"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -213,12 +211,12 @@
 
                     <EditText
                         android:id="@+id/car_code"
+                        style="@style/Edit2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_weight="2"
-                        android:hint="请填写真实车牌"
-                        style="@style/EditNormal"/>
+                        android:hint="请填写真实车牌"/>
                 </LinearLayout>
 
                 <View
@@ -246,29 +244,30 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="41dp"
-                        android:gravity="center_vertical"
                         android:layout_marginLeft="20dp"
-                        android:layout_weight="2">
+                        android:layout_weight="2"
+                        android:gravity="center_vertical">
 
                         <Spinner
                             android:id="@+id/brand"
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:padding="10dp"/>
 
                         <Spinner
                             android:id="@+id/clazz"
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:padding="10dp"/>
 
                         <Spinner
                             android:id="@+id/color"
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:entries="@array/colors"
                             android:padding="10dp"/>
                     </LinearLayout>
                 </LinearLayout>
@@ -296,12 +295,12 @@
 
                     <EditText
                         android:id="@+id/owner_name"
+                        style="@style/Edit2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_weight="2"
-                        android:hint="请填写真实姓名"
-                        style="@style/EditNormal"/>
+                        android:hint="请填写真实姓名"/>
                 </LinearLayout>
 
                 <View
@@ -327,6 +326,7 @@
 
                     <TextView
                         android:id="@+id/car_register_date"
+                        style="@style/EditNormal"
                         android:layout_width="0dp"
                         android:layout_height="41dp"
                         android:layout_marginLeft="20dp"
@@ -334,7 +334,6 @@
                         android:background="#fff"
                         android:gravity="center_vertical|start"
                         android:hint="请选择车辆注册日期"
-                        style="@style/EditNormal"
                         android:textSize="18sp"/>
                 </LinearLayout>
 
@@ -405,6 +404,7 @@
             <Button
                 android:id="@+id/next"
                 style="@style/NextBt"
+                android:textColor="#fff"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="20dp"

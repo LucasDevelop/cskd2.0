@@ -10,11 +10,11 @@ import com.cskd20.base.BaseFragment;
 
 /**
  * @创建者 lucas
- * @创建时间 2017/5/26 0026 10:09
- * @描述 我的  界面
+ * @创建时间 2017/6/2 0002 9:34
+ * @描述 服务站
  */
 
-public class PersonalFragment extends BaseFragment {
+public class ServerFragment extends BaseFragment {
     @Override
     public void initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -22,9 +22,8 @@ public class PersonalFragment extends BaseFragment {
 
     @Override
     public View getLayoutView() {
-        TextView view = new TextView(getActivity());
-        view.setText("personal");
-        view.setTextColor(0xf00);
-        return view;
+        TextView textView = new TextView(getActivity());
+        textView.setText("服务扎");
+        return textView;
     }
 }

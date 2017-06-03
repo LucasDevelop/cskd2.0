@@ -120,14 +120,14 @@ public class RegisterSetup0Activity extends BaseActivity {
                     @Override
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                         Log.d("lucas","json:"+ response.body().toString());
-                        if (ResponseUtil.getStatus(response)==1){
+                        if (ResponseUtil.getStatus(response.body())==1){
                             RegisterBean registerBean = CommonFactory.getGsonInstance().fromJson(response.body()
                                     .toString(), RegisterBean.class);
                             SPUtils.put(mContext,"token",registerBean.data.token);
                             //注册成功跳转到信息完善界面
                             startActivity(new Intent(mContext,RegisterSetup1Activity.class));
                         }else
-                            Toast.makeText(mContext, ResponseUtil.getMsg(response), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, ResponseUtil.getMsg(response.body()), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

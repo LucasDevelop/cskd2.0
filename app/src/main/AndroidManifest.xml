@@ -2,20 +2,21 @@
 <manifest package="com.cskd20"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
-
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
-        android:allowBackup="true"
         android:name=".App"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".module.login.activity.LoginActivity">
+        <activity
+            android:name=".module.login.activity.LoginActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -30,6 +31,8 @@
         <activity android:name=".module.login.activity.RegisterSetup1Activity"/>
         <activity android:name=".module.login.activity.RegisterSetup2Activity"/>
         <activity android:name=".module.personal.PersonalActivity">
+        </activity>
+        <activity android:name=".module.main.activity.ModeSettingActivity">
         </activity>
     </application>
 

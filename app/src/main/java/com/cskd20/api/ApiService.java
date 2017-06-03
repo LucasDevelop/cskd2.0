@@ -5,14 +5,19 @@ import com.cskd20.bean.SendCodeBean;
 import com.cskd20.utils.Constants;
 import com.google.gson.JsonObject;
 
+import java.util.Map;
+
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Query;
 
 /**
  * @创建者 lucas
@@ -25,7 +30,7 @@ public interface ApiService {
     //登录
     @FormUrlEncoded
     @POST(Constants.LOGIN)
-    Call<JsonObject> login(@Field("Phone") String username, @Field("password") String pwd);
+    Call<JsonObject> login(@Field("phone") String username, @Field("password") String pwd);
 
     //发送验证码
     @FormUrlEncoded
@@ -47,4 +52,23 @@ public interface ApiService {
     @Headers("Connection: close")//iDValidationByDPI
     @POST(Constants.UPLOAD_IMG)
     Call<JsonObject> uploadImg(@Part MultipartBody.Part imgs);
+
+    //修改密码
+    @FormUrlEncoded
+    @POST(Constants.MIDF_PWD)
+    Call<JsonObject> modifPwd(@Field("phone") String phone,@Field("password") String pwd);
+
+    //校验验证码
+    @GET(Constants.CHECK_CODE)
+    Call<JsonObject> checkCode(@Query("phone") String phone,@Query("code") String code,@Query("interface") int inter );
+
+    //获取车型
+    @FormUrlEncoded
+    @POST(Constants.CAR_TYPE)
+    Call<JsonObject> getCarType(@Field("name") String name);
+
+    //司机注册
+    @FormUrlEncoded
+    @POST(Constants.DRIVE_REGISTER)
+    Call<JsonObject> driveRegister(@FieldMap Map<String ,String> map);
 }
