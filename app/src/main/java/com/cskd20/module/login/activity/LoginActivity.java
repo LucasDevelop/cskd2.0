@@ -43,8 +43,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         switch (v.getId()) {
             //提交登录
             case R.id.login_submit:
-                OpenMain();
-//                login();
+//                OpenMain();
+                login();
                 break;
             case R.id.register:
                 startActivity(new Intent(this, RegisterSetup0Activity.class));

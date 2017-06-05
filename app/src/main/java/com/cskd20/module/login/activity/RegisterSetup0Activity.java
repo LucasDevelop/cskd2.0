@@ -64,11 +64,11 @@ public class RegisterSetup0Activity extends BaseActivity {
                 sendCode();
                 break;
             case R.id.register:
-                startActivity(new Intent(mContext,RegisterSetup1Activity.class));
-//                String phone = checkPhone();
-//                if (phone == null)
-//                    return;
-//                checkPhoneIsRegister(phone);
+//                startActivity(new Intent(mContext,RegisterSetup1Activity.class));
+                String phone = checkPhone();
+                if (phone == null)
+                    return;
+                checkPhoneIsRegister(phone);
                 break;
             default:
                 break;

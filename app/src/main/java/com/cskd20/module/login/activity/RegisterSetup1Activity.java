@@ -91,9 +91,9 @@ public class RegisterSetup1Activity extends BaseActivity implements AdapterView.
                 for (int i = 0; i < bean.data.size(); i++) {
                     mList1.add(bean.data.get(i).make_name);
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout
-                        .test_list_item, mList1);
-                adapter.setDropDownViewResource(android.R.layout.test_list_item);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.item_select,
+                        mList1);
+                adapter.setDropDownViewResource(R.layout.item_select);
                 mBrand.setAdapter(adapter);
             }
 
@@ -117,9 +117,9 @@ public class RegisterSetup1Activity extends BaseActivity implements AdapterView.
                 for (int i = 0; i < bean.data.size(); i++) {
                     mList2.add(bean.data.get(i).model_name);
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout
-                        .test_list_item, mList2);
-                adapter.setDropDownViewResource(android.R.layout.test_list_item);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout
+                        .item_select, mList2);
+                adapter.setDropDownViewResource(R.layout.item_select);
                 mClazz.setAdapter(adapter);
             }
 
@@ -135,8 +135,8 @@ public class RegisterSetup1Activity extends BaseActivity implements AdapterView.
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.next:
-//                saveInfo();
-                                startActivity(new Intent(this, RegisterSetup2Activity.class));
+                saveInfo();
+                //                                startActivity(new Intent(this, RegisterSetup2Activity.class));
                 break;
             case R.id.insurance_start://车险起始时间
                 showPickerDate(R.id.insurance_start);
@@ -162,8 +162,11 @@ public class RegisterSetup1Activity extends BaseActivity implements AdapterView.
         String carRegisterDate = mCarRegisterDate.getText().toString().trim();
         String insuranceStart = mInsuranceStart.getText().toString().trim();
         String insuranceEnd = mInsuranceEnd.getText().toString().trim();
-        String brand = mBrand.getSelectedItem().toString().trim();
-        String clzz = mClazz.getSelectedItem().toString().trim();
+        String brand = null, clzz = null;
+        if (mList1.size() != 0)
+            brand = mBrand.getSelectedItem().toString().trim();
+        if (mList2.size() != 0)
+            clzz = mClazz.getSelectedItem().toString().trim();
         String color = mColor.getSelectedItem().toString().trim();
         //验证
         String msg = null;
@@ -187,11 +190,11 @@ public class RegisterSetup1Activity extends BaseActivity implements AdapterView.
             msg = "请选择车险起始日期";
         if (insuranceEnd.contains("-"))
             msg = "请选择车险结束日期";
-        if (TextUtils.isEmpty(brand)||brand.equals("品牌"))
+        if (TextUtils.isEmpty(brand) || brand.equals("品牌"))
             msg = "请选择汽车品牌";
-        if (TextUtils.isEmpty(clzz)||clzz.equals("类型"))
+        if (TextUtils.isEmpty(clzz) || clzz.equals("类型"))
             msg = "请选择汽车类型";
-        if (TextUtils.isEmpty(color)||color.equals("颜色"))
+        if (TextUtils.isEmpty(color) || color.equals("颜色"))
             msg = "请选择汽车颜色";
         if (msg != null) {
             Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
@@ -235,7 +238,7 @@ public class RegisterSetup1Activity extends BaseActivity implements AdapterView.
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        load2Menu(mList1.get(position+1));
+        load2Menu(mList1.get(position + 1));
     }
 
     @Override

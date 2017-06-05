@@ -156,7 +156,7 @@ public class RegisterSetup2Activity extends BaseActivity implements View.OnClick
         map.put("start_insurance",mInfo.start_insurance);
         map.put("end_insurance",mInfo.end_insurance);
         map.put("car_regist_time",mInfo.car_regist_time);
-
+        Log.d("RegisterSetup2Activity", "map:" + map);
         mApi.driveRegister(map).enqueue(new CallBack<JsonObject>() {
             @Override
             public void onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
