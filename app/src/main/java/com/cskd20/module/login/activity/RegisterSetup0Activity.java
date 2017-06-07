@@ -210,6 +210,7 @@ public class RegisterSetup0Activity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (mTimeTask!=null)
         mTimeTask.stop();
     }
 }

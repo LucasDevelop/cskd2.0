@@ -18,7 +18,9 @@ import android.text.TextUtils;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import java.io.ByteArrayInputStream;
@@ -294,5 +296,80 @@ public class CommonUtil {
         ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());//把压缩后的数据baos存放到ByteArrayInputStream中
         Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);//把ByteArrayInputStream数据生成图片
         return bitmap;
+    }
+
+    /**
+     * dp-->px
+     */
+    public static int dp2px(Context context,int dp) {
+        // int densityDpi = getResources().getDisplayMetrics().densityDpi;
+        float density = context.getResources().getDisplayMetrics().density;
+        // System.out.println("densityDpi:" + densityDpi);
+        // System.out.println("density:" + density);
+        int px = (int) (dp * density + .5f);
+        return px;
+    }
+
+    /**
+     * px->dp
+     */
+    public static int px2dp(Context context,int px) {
+        // px/dp = density
+        float density = context.getResources().getDisplayMetrics().density;
+        int dp = (int) (px / density + .5f);
+        return dp;
+    }
+
+    /**
+     * sp转px
+     */
+    public static int sp2px(Context context,float spVal) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+                spVal, context.getResources().getDisplayMetrics());
+    }
+
+    /**
+     * px转sp
+     */
+    public static float px2sp(Context context,float pxVal) {
+        return (pxVal / context.getResources().getDisplayMetrics().scaledDensity);
+    }
+    /**
+     * 获取屏幕宽
+     */
+    public static int getScreenWidth(Context context) {
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        return windowManager.getDefaultDisplay().getWidth();
+    }
+
+    /**
+     * 获取屏幕的高度
+     *
+     * @param context
+     * @return
+     */
+    public static int getScreenHeight(Context context) {
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        return windowManager.getDefaultDisplay().getHeight();
+    }
+
+    /**
+     * 获得状态栏的高度
+     *
+     * @return
+     */
+    public static int getStatusHeight(Context context) {
+
+        int statusHeight = -1;
+        try {
+            Class<?> clazz = Class.forName("com.android.internal.R$dimen");
+            Object object = clazz.newInstance();
+            int height = Integer.parseInt(clazz.getField("status_bar_height")
+                    .get(object).toString());
+            statusHeight = context.getResources().getDimensionPixelSize(height);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return statusHeight;
     }
 }

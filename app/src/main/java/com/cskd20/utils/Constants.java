@@ -10,12 +10,22 @@ public interface Constants {
     long CONN_TIME_OUT = 1000 * 20;
     long READ_TIME_OUT = 1000 * 20;
     //日志等级
-    int DEBUGLEVEL = LogUtils.LEVEL_VERBOSE;
+    int  DEBUGLEVEL    = LogUtils.LEVEL_VERBOSE;
+    //订单请求频率
+    long REQUEST_ORDER_RATE = 10*1000;
+    //接单类型  true  自动  face 手动
+    String ORDER_TYPE = "ORDER_TYPE";
+    //自动接单
+    String AUTO_ORDER = "AUTO_ORDER";
+    //司机位子
+    String LNG        = "lng", LAT = "lat";
 
     //域名
-    String URI = "http://www.chengshikuaidao.com:8080/index.php/Api/";
+    String URI      = "http://www.chengshikuaidao.com:8080/index.php/Api/";
     //本地域名
-    String TEST_URI = "http://www.chengshikuaidao.com:6060/index.php/Api/";
+    String TEST_URI = "http://192.168.2.117/index.php/Api/";
+//    http://www.chengshikuaidao.com:6060/index.php/Api/
+//    http://192.168.2.117/index.php/Api/
 
     //登录接口
     String LOGIN = "ApiDriver/login";
@@ -24,7 +34,7 @@ public interface Constants {
     String REGISTER = "ApiDriver/register";
 
     //发送验证码
-    String SEND_CODE   = "ApiDriver/send_Code";
+    String SEND_CODE = "ApiDriver/send_Code";
 
     //检查验证码
     String CHECK_PHONE = "ApiDriver/checkPhone";
@@ -43,4 +53,10 @@ public interface Constants {
 
     //司机注册
     String DRIVE_REGISTER = "ApiDriver/drive_register";
+
+    //获取订单
+    String GET_ORDER = "ApiDriver/get_order";
+
+    //确认接单
+    String ORDER_TAKING = "ApiDriver/meet_passenger";
 }

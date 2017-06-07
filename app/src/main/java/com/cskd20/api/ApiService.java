@@ -71,4 +71,15 @@ public interface ApiService {
     @FormUrlEncoded
     @POST(Constants.DRIVE_REGISTER)
     Call<JsonObject> driveRegister(@FieldMap Map<String ,String> map);
+
+    //获取订单
+    @FormUrlEncoded
+    @POST(Constants.GET_ORDER)
+    Call<JsonObject> getOrder(@Field("uid") String uid,@Field("lng") String lng,@Field("lat") String lat
+    ,@Field("auto") String auto,@Field("car_type") String carType,@Field("order_id") String orderId);
+
+    //去人接单
+    @FormUrlEncoded
+    @POST(Constants.ORDER_TAKING)
+    Call<JsonObject> orderTaking(@Field("order_id") String id);
 }

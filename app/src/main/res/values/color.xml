@@ -14,4 +14,7 @@
     <color name="gray">#969595</color>
     <color name="text_hint">#c7c7c7</color>
     <color name="org">#fc881c</color>
+    <color name="ww">#0ebc0e</color>
+    <color name="devider">#d6d6d6</color>
+
 </resources>

@@ -7,6 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.cskd20.api.ApiService;
+import com.cskd20.factory.CommonFactory;
+import com.google.gson.Gson;
+
 import butterknife.ButterKnife;
 
 /**
@@ -17,11 +21,15 @@ import butterknife.ButterKnife;
 
 public abstract class BaseFragment extends Fragment {
     private View mLayoutID;
+    protected ApiService mApi;
+    protected Gson mGson;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
             savedInstanceState) {
+        mApi = CommonFactory.getApiInstance();
+        mGson = CommonFactory.getGsonInstance();
         View view = getLayoutView();
         ButterKnife.bind(this,view);
         initView(inflater, container, savedInstanceState);

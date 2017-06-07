@@ -18,6 +18,7 @@ import com.cskd20.base.BaseActivity;
 import com.cskd20.bean.ImageTag;
 import com.cskd20.bean.InfoBean;
 import com.cskd20.factory.CallBack;
+import com.cskd20.popup.LoadingPop;
 import com.cskd20.popup.PictureSelectPopup;
 import com.cskd20.utils.CommonUtil;
 import com.cskd20.utils.ResponseUtil;
@@ -82,6 +83,7 @@ public class RegisterSetup2Activity extends BaseActivity implements View.OnClick
     private InfoBean mInfo;//个人信息
     private static final int SUCCESS = 1;//上传成功
     private static final int FAILED  = 0;//上传失败
+    private LoadingPop mLoadingPop;
 
     @Override
     protected int setContentView() {
@@ -91,6 +93,8 @@ public class RegisterSetup2Activity extends BaseActivity implements View.OnClick
     @Override
     protected void initView(@Nullable Bundle savedInstanceState) {
         mInfo = (InfoBean) getIntent().getSerializableExtra("info");
+        mLoadingPop = new LoadingPop.Builder(this)
+                .setTitle("上传中...").build();
     }
 
     @OnClick({R.id.photo1, R.id.photo2, R.id.photo3, R.id.next})
@@ -109,6 +113,7 @@ public class RegisterSetup2Activity extends BaseActivity implements View.OnClick
                 showSelectPhotoPopup();
                 break;
             case R.id.next:
+                //                startActivity(new Intent(this,RegisterSetup3Activity.class));
                 submit();
                 break;
             default:
@@ -137,37 +142,39 @@ public class RegisterSetup2Activity extends BaseActivity implements View.OnClick
         mInfo.id_card_logo = mPhoto1Tag.url;
         mInfo.driver_no_logo = mPhoto2Tag.url;
         mInfo.driving_logo = mPhoto3Tag.url;
-        mInfo.token = (String) SPUtils.get(mContext,"token","");
+        mInfo.token = (String) SPUtils.get(mContext, "token", "");
 
 
         HashMap<String, String> map = new HashMap<>();
-        map.put("realname",mInfo.realname);
-        map.put("id_card",mInfo.id_card);
-        map.put("id_card_logo",mInfo.id_card_logo);
-        map.put("driver_no_logo",mInfo.driver_no_logo);
-        map.put("driving_logo",mInfo.driving_logo);
-        map.put("car_brand",mInfo.car_brand);
-        map.put("car_series",mInfo.car_series);
-        map.put("car_color",mInfo.car_color);
-        map.put("city",mInfo.city);
-        map.put("driving",mInfo.driving);
-        map.put("token",mInfo.token);
-        map.put("car_owner",mInfo.car_owner);
-        map.put("start_insurance",mInfo.start_insurance);
-        map.put("end_insurance",mInfo.end_insurance);
-        map.put("car_regist_time",mInfo.car_regist_time);
+        map.put("realname", mInfo.realname);
+        map.put("id_card", mInfo.id_card);
+        map.put("id_card_logo", mInfo.id_card_logo);
+        map.put("driver_no_logo", mInfo.driver_no_logo);
+        map.put("driving_logo", mInfo.driving_logo);
+        map.put("car_brand", mInfo.car_brand);
+        map.put("car_series", mInfo.car_series);
+        map.put("car_color", mInfo.car_color);
+        map.put("city", mInfo.city);
+        map.put("driving", mInfo.driving);
+        map.put("token", mInfo.token);
+        map.put("car_owner", mInfo.car_owner);
+        map.put("start_insurance", mInfo.start_insurance);
+        map.put("end_insurance", mInfo.end_insurance);
+        map.put("car_regist_time", mInfo.car_regist_time);
         Log.d("RegisterSetup2Activity", "map:" + map);
         mApi.driveRegister(map).enqueue(new CallBack<JsonObject>() {
             @Override
-            public void onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
+            public boolean onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
                 Toast.makeText(mContext, ResponseUtil.getMsg(response.body()), Toast.LENGTH_SHORT).show();
                 JSONObject jsonObject = ResponseUtil.Jsb2JSb(response.body());
                 try {
                     String token = jsonObject.getJSONObject("data").getString("token");
-                    SPUtils.put(mContext,"token",token);
+                    SPUtils.put(mContext, "token", token);
+                    startActivity(new Intent(RegisterSetup2Activity.this,RegisterSetup3Activity.class));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                return true;
             }
 
             @Override
@@ -259,7 +266,7 @@ public class RegisterSetup2Activity extends BaseActivity implements View.OnClick
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        mLoadingPop.show(this);
         //上传图片
         uploadPic(uri, tempView);
     }
@@ -283,11 +290,17 @@ public class RegisterSetup2Activity extends BaseActivity implements View.OnClick
                     //上传成功
                     tag.status = SUCCESS;
                     tag.url = CommonUtil.getUri2Filename(getApplicationContext(), uri);
+                    mLoadingPop.setTitle("上传成功!");
+                    mLoadingPop.setIcon(R.mipmap.ic_success);
+                    delayHide();
                 } else {
                     tag.status = FAILED;
+                    mLoadingPop.setTitle("上传失败!");
+                    mLoadingPop.setIcon(R.mipmap.ic_fail);
+                    delayHide();
                 }
                 tempView.setTag(tag);
-                Toast.makeText(mContext, ResponseUtil.getMsg(response.body()), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext, ResponseUtil.getMsg(response.body()), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -295,10 +308,22 @@ public class RegisterSetup2Activity extends BaseActivity implements View.OnClick
                 ImageTag tag = (ImageTag) tempView.getTag();
                 tag.status = FAILED;
                 tempView.setTag(tag);
+                mLoadingPop.setTitle("上传失败!");
+                mLoadingPop.setIcon(R.mipmap.ic_fail);
+                delayHide();
                 t.printStackTrace();
-                Toast.makeText(mContext, "上传失败", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext, "上传失败", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void delayHide() {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mLoadingPop.hide();
+            }
+        }, 1000);
     }
 
     /**

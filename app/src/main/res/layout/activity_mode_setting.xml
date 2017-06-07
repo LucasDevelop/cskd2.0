@@ -30,20 +30,21 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp"
+            android:paddingTop="7dp"
             android:text="设置接单类型(多选)"
             android:textColor="@color/black"
-            android:textSize="18sp"/>
+            android:textSize="16sp"/>
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp">
 
             <RelativeLayout
                 android:id="@+id/conv_car"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp">
+                android:layout_margin="5dp">
 
                 <CheckBox
                     android:id="@+id/cb_conv_car"
@@ -62,7 +63,7 @@
                 android:id="@+id/commerce_car"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:layout_toRightOf="@id/conv_car">
 
                 <CheckBox
@@ -82,7 +83,7 @@
                 android:id="@+id/accept_car"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:layout_toRightOf="@id/commerce_car">
 
                 <CheckBox
@@ -103,7 +104,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/conv_car"
-                android:layout_margin="10dp">
+                android:layout_margin="5dp">
 
                 <CheckBox
                     android:id="@+id/cb_carpool"
@@ -123,7 +124,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/conv_car"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:layout_toRightOf="@id/carpool">
 
                 <CheckBox
@@ -144,7 +145,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/conv_car"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:layout_toRightOf="@id/shuttle">
 
                 <CheckBox
@@ -168,7 +169,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:background="#fff"
-        android:paddingBottom="10dp"
+        android:paddingBottom="7dp"
         android:paddingLeft="14dp"
         android:paddingRight="14dp">
 
@@ -177,7 +178,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="7dp"
             android:text="设置手动/自动接单"
             android:textColor="@color/black"
             android:textSize="16sp"/>
@@ -186,7 +187,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/temp1"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="10dp"
             android:text="实时订单自动接单"
             android:textColor="@color/black"
             android:textSize="16sp"/>
@@ -197,7 +198,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_below="@id/temp1"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="7dp"
             android:switchPadding="10dp"
             app:kswTextOn="已打开"
             app:kswTextOff="已关闭"/>
@@ -208,7 +209,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:background="#fff"
-        android:paddingBottom="10dp"
+        android:paddingBottom="7dp"
         android:paddingLeft="14dp"
         android:paddingRight="14dp">
 
@@ -217,7 +218,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="7dp"
             android:text="设置顺路接单"
             android:textColor="@color/black"
             android:textSize="16sp"/>
@@ -246,8 +247,12 @@
             <EditText
                 android:id="@+id/destination_end"
                 android:layout_width="0dp"
+                android:background="@drawable/bt_layer_gray"
                 android:layout_height="wrap_content"
+                android:hint="请输入确认地址多不填"
+                android:textSize="16sp"
                 android:layout_marginLeft="10dp"
+                android:padding="5dp"
                 android:layout_weight="1"/>
         </LinearLayout>
     </RelativeLayout>
@@ -258,7 +263,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:background="#fff"
-        android:paddingBottom="10dp"
+        android:paddingBottom="7dp"
         android:paddingLeft="14dp"
         android:paddingRight="14dp">
 
@@ -294,6 +299,7 @@
             />
 
         <LinearLayout
+            android:layout_marginTop="7dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/auto_taking"
@@ -329,7 +335,8 @@
     </RelativeLayout>
 
     <Button
-        android:text="保存设置"
+        android:id="@+id/submit"
         style="@style/submitBt"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="15dp"
+        android:text="保存设置"/>
 </LinearLayout>

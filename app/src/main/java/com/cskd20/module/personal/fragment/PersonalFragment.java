@@ -1,5 +1,6 @@
 package com.cskd20.module.personal.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import com.cskd20.R;
 import com.cskd20.base.BaseActivity;
 import com.cskd20.base.BaseFragment;
+import com.cskd20.module.personal.activity.PersonalCenterActivity;
 
 import butterknife.OnClick;
 
@@ -32,7 +34,7 @@ public class PersonalFragment extends BaseFragment {
     }
 
     @OnClick({R.id.appointment,R.id.my,R.id.wallet,R.id.msg,
-            R.id.recommend,R.id.my_car,R.id.activity,R.id.setting})
+            R.id.recommend,R.id.my_car,R.id.activity,R.id.setting,R.id.head_img})
     public void onClick(View view){
         switch (view.getId()) {
             case R.id.appointment://预约行程
@@ -51,6 +53,9 @@ public class PersonalFragment extends BaseFragment {
             case R.id.activity://奖励活动
                 break;
             case R.id.setting://设置
+                break;
+            case R.id.head_img:
+                startActivity(new Intent(getActivity(), PersonalCenterActivity.class));
                 break;
         }
     }

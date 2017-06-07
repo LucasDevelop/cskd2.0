@@ -1,5 +1,6 @@
 package com.cskd20.module.main.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -10,6 +11,7 @@ import com.cskd20.base.BaseActivity;
 import com.cskd20.base.BaseFragment;
 import com.cskd20.module.main.adapter.MainFragmentAdapter;
 import com.cskd20.module.main.fragment.MainFragment;
+import com.cskd20.module.main.server.LocationService;
 import com.cskd20.module.personal.fragment.PersonalFragment;
 import com.cskd20.module.main.fragment.ServerFragment;
 
@@ -48,6 +50,9 @@ public class MainActivity extends BaseActivity {
         mTab.setTabMode(TabLayout.MODE_FIXED);
         mViewPager.setAdapter(fragmentAdapter);
         mTab.setupWithViewPager(mViewPager);
+
+        //启动定位服务
+        startService(new Intent(this, LocationService.class));
 
         //默认选中首页
         mTab.getTabAt(1).select();

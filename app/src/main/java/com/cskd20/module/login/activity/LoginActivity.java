@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.cskd20.App;
 import com.cskd20.R;
 import com.cskd20.base.BaseActivity;
 import com.cskd20.bean.LoginBean;
@@ -69,20 +70,25 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             Toast.makeText(this, "请输入6-16位的密码", Toast.LENGTH_SHORT).show();
             return;
         }
+        try {
+
         CommonFactory.getApiInstance().login(username, pwd)
                 .enqueue(new CallBack<JsonObject>() {
                     @Override
-                    public void onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
+                    public boolean onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
                         LoginBean loginBean = CommonFactory.getGsonInstance().fromJson(response.body().toString(),
                                 LoginBean.class);
                         if (loginBean.status == 1) {
                             SPUtils.put(mContext, "token", loginBean.data.token);
+                            //保存个人信息
+                            App.setUser(loginBean);
                             //进入主页
                             OpenMain();
                         } else {
                             //登录失败，显示错误
                             Toast.makeText(LoginActivity.this, loginBean.msg, Toast.LENGTH_SHORT).show();
                         }
+                        return true;
                     }
 
                     @Override
@@ -90,6 +96,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
                     }
                 });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 

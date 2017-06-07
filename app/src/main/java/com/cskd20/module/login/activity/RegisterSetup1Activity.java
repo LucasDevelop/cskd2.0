@@ -80,11 +80,17 @@ public class RegisterSetup1Activity extends BaseActivity implements AdapterView.
         mBrand.setOnItemSelectedListener(this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        show();
+    }
+
     //获取车辆类型
     private void initDate() {
         mApi.getCarType("").enqueue(new CallBack<JsonObject>() {
             @Override
-            public void onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
+            public boolean onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
                 CarTypeBean bean = CommonFactory.getGsonInstance().fromJson(response.body().toString(),
                         CarTypeBean.class);
                 mList1.add("品牌");
@@ -95,11 +101,12 @@ public class RegisterSetup1Activity extends BaseActivity implements AdapterView.
                         mList1);
                 adapter.setDropDownViewResource(R.layout.item_select);
                 mBrand.setAdapter(adapter);
+                return true;
             }
 
             @Override
             public void onFailure1(Call<JsonObject> call, Throwable t) {
-
+                hide();
             }
         });
 
@@ -109,7 +116,7 @@ public class RegisterSetup1Activity extends BaseActivity implements AdapterView.
     private void load2Menu(String s) {
         mApi.getCarType(s).enqueue(new CallBack<JsonObject>() {
             @Override
-            public void onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
+            public boolean onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
                 CarType2Bean bean = CommonFactory.getGsonInstance().fromJson(response.body().toString(),
                         CarType2Bean.class);
                 mList2.clear();
@@ -121,11 +128,13 @@ public class RegisterSetup1Activity extends BaseActivity implements AdapterView.
                         .item_select, mList2);
                 adapter.setDropDownViewResource(R.layout.item_select);
                 mClazz.setAdapter(adapter);
+                hide();
+                return true;
             }
 
             @Override
             public void onFailure1(Call<JsonObject> call, Throwable t) {
-
+                hide();
             }
         });
     }
@@ -136,7 +145,8 @@ public class RegisterSetup1Activity extends BaseActivity implements AdapterView.
         switch (view.getId()) {
             case R.id.next:
                 saveInfo();
-                //                                startActivity(new Intent(this, RegisterSetup2Activity.class));
+                //                                                startActivity(new Intent(this,
+                // RegisterSetup2Activity.class));
                 break;
             case R.id.insurance_start://车险起始时间
                 showPickerDate(R.id.insurance_start);

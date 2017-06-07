@@ -140,6 +140,6 @@
             android:layout_marginLeft="0dp"
             android:layout_marginRight="0dp"
             android:background="@color/colorMain"
-            android:text="接到乘客"/>
+            android:text="到达上车地点"/>
     </LinearLayout>
 </RelativeLayout>

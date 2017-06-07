@@ -3,14 +3,19 @@ package com.cskd20.base;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.cskd20.R;
 import com.cskd20.api.ApiService;
 import com.cskd20.factory.CommonFactory;
+import com.cskd20.imp.LoadingImp;
+import com.cskd20.popup.LoadingPop;
 
 import java.util.ArrayList;
 
@@ -22,11 +27,15 @@ import butterknife.ButterKnife;
  * @描述 基类
  */
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity implements LoadingImp {
 
-    protected      Context                 mContext;
+    protected Context mContext;
     private static ArrayList<BaseActivity> mActivities = new ArrayList<>();
     public         ApiService              mApi        = CommonFactory.getApiInstance();
+    private LoadingPop mLoadingPop;
+    private View       mRootView;
+    public Handler mHandler = new Handler();
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,6 +43,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         mContext = getApplicationContext();
         setContentView(setContentView());
         ButterKnife.bind(this);
+        initCommon();
         initView(savedInstanceState);
         initEvent();
     }
@@ -43,7 +53,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected abstract void initView(@Nullable Bundle savedInstanceState);
 
     protected void initEvent() {
-
     }
 
     /**
@@ -53,17 +62,43 @@ public abstract class BaseActivity extends AppCompatActivity {
         //设置横屏模式
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         //获取全局的根布局
-        View view = findViewById(android.R.id.content);
-//        //给所有的按钮添加点击事件
-//        UIUtils.setViewClickListener(view, this);
+        //        ViewGroup view = (ViewGroup) findViewById(android.R.id.content);
+        mRootView = findViewById(R.id.root);
+        //        //给所有的按钮添加点击事件
+        //        UIUtils.setViewClickListener(view, this);
         //将活动页面添加到容器中
 
         if (!mActivities.contains(this)) {
             mActivities.add(this);
         }
 
+        mLoadingPop = new LoadingPop(this);
+
     }
 
+    protected void exit() {
+        for (int i = 0; i < mActivities.size(); i++) {
+            mActivities.get(i).finish();
+        }
+    }
+
+    @Override
+    public void show() {
+        if (mLoadingPop != null && !mLoadingPop.isShowing()) {
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mLoadingPop.showAtLocation(mRootView, Gravity.CENTER, 0, 0);
+                }
+            }, 100);
+        }
+    }
+
+    @Override
+    public void hide() {
+        if (mLoadingPop != null && mLoadingPop.isShowing())
+            mLoadingPop.dismiss();
+    }
 
     @Override
     protected void onDestroy() {
