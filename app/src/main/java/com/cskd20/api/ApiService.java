@@ -78,8 +78,15 @@ public interface ApiService {
     Call<JsonObject> getOrder(@Field("uid") String uid,@Field("lng") String lng,@Field("lat") String lat
     ,@Field("auto") String auto,@Field("car_type") String carType,@Field("order_id") String orderId);
 
-    //去人接单
+    //确认接单乘客
     @FormUrlEncoded
-    @POST(Constants.ORDER_TAKING)
-    Call<JsonObject> orderTaking(@Field("order_id") String id);
+    @POST(Constants.MEET_PASSENGER)
+    Call<JsonObject> meetPass(@Field("order_id") String orderId);
+
+    //返回价格详情
+    @FormUrlEncoded
+    @POST(Constants.push_price_info)
+    Call<JsonObject> pushPriceInfo(@Field("order_id") String orderId,@Field("token") String token,
+                                   @Field("mem_type_id") String memTypeId,@Field("total_km") String totalKm,
+                                   @Field("areas") String areas,@Field("gotime") String goTime);
 }

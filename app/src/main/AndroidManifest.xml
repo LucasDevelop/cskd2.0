@@ -79,7 +79,7 @@
 
         <activity android:name=".module.personal.activity.PersonalCenterActivity">
         </activity>
-        <activity android:name=".module.main.activity.TakingOrderActivity">
+        <activity android:name=".module.main.activity.OrderInfoActivity">
         </activity>
     </application>
 

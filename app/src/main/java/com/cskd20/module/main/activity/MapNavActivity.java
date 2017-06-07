@@ -3,15 +3,16 @@ package com.cskd20.module.main.activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amap.api.location.AMapLocation;
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.MapView;
@@ -31,14 +32,19 @@ import com.amap.api.services.route.WalkRouteResult;
 import com.cskd20.R;
 import com.cskd20.base.BaseActivity;
 import com.cskd20.bean.OrderBean;
+import com.cskd20.factory.CallBack;
 import com.cskd20.module.main.server.LocationService;
 import com.cskd20.module.main.utils.DrivingRouteOverLay;
 import com.cskd20.popup.LoadingPop;
 import com.cskd20.utils.AMapUtil;
 import com.cskd20.utils.LogUtils;
+import com.cskd20.utils.ResponseUtil;
+import com.google.gson.JsonObject;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Response;
 
 /**
  * @创建者 lucas
@@ -49,12 +55,17 @@ import butterknife.OnClick;
 public class MapNavActivity extends BaseActivity implements AMap.OnMapLoadedListener, LocationService
         .LocationChangeListener {
     @Bind(R.id.map)
-    MapView mMapView;
+    MapView  mMapView;
     @Bind(R.id.submit)
-    Button  mSubmit;
+    Button   mSubmit;
+    @Bind(R.id.start_point)
+    TextView mStartTV;
+    @Bind(R.id.end_point)
+    TextView mEndTV;
+
     private AMap          mMap;
     private MarkerOptions mDriverMK;//司机地图上的位置
-    private LatLng      mDriverPoint = null;//司机的地理位置22.56904,113.866899
+    private LatLonPoint mDriverPoint = null;//司机的地理位置22.56904,113.866899
     private LatLonPoint mStartPoint  = new LatLonPoint(22.56910, 113.866888);//起点
     private LatLonPoint mEndPoint    = new LatLonPoint(22.56730, 113.866555);//终点
     private RouteSearch mRouteSearch;
@@ -91,6 +102,7 @@ public class MapNavActivity extends BaseActivity implements AMap.OnMapLoadedList
     };
     private LocationService.LocationBind mLocationBind;
     private OrderBean                    mOrderBean;
+    private String mCity;
 
     @Override
     protected int setContentView() {
@@ -101,7 +113,11 @@ public class MapNavActivity extends BaseActivity implements AMap.OnMapLoadedList
     protected void initView(@Nullable Bundle savedInstanceState) {
         mMapView.onCreate(savedInstanceState);
         mLoadingPop = new LoadingPop(this);
+        showProgressDialog();
         mOrderBean = (OrderBean) getIntent().getSerializableExtra("order");
+        mStartTV.setText(mOrderBean.data.start_place);
+        mEndTV.setText(mOrderBean.data.end_place);
+
         if (mOrderBean != null) {
             mStartPoint.setLatitude(mOrderBean.data.start_latitude);
             mStartPoint.setLongitude(mOrderBean.data.start_longitude);
@@ -150,7 +166,7 @@ public class MapNavActivity extends BaseActivity implements AMap.OnMapLoadedList
             Log.d("lucas", "终点未设置");
             return;
         }
-        showProgressDialog();
+        mLoadingPop.dismiss();
         final RouteSearch.FromAndTo fromAndTo = new RouteSearch.FromAndTo(
                 startPoint, endPoint);
         if (routeType == ROUTE_TYPE_DRIVE) {// 驾车路径规划
@@ -167,11 +183,13 @@ public class MapNavActivity extends BaseActivity implements AMap.OnMapLoadedList
 
     //定位成功
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(AMapLocation location) {
         if (location != null) {
-            mDriverPoint = new LatLng(location.getLatitude(), location.getLongitude());
+            mDriverPoint = new LatLonPoint(location.getLatitude(), location.getLongitude());
             //开始绘制司机到乘客起点的路线和marker
-            searchRouteResult(mStartPoint, mEndPoint, ROUTE_TYPE_DRIVE, RouteSearch.DrivingDefault);
+            searchRouteResult(mDriverPoint, mStartPoint, ROUTE_TYPE_DRIVE,
+                    RouteSearch.DrivingDefault);
+            mCity = location.getCity();
             //标记司机的位子
             //            mDriverMarker = addDriverMarker(mDriverPoint);
         }
@@ -278,12 +296,18 @@ public class MapNavActivity extends BaseActivity implements AMap.OnMapLoadedList
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.submit:
-                if (DRIVER_STATUS == NORMAL)
+                if (DRIVER_STATUS == NORMAL) {
                     reachStart(); //到达上车地点
-                if (DRIVER_STATUS == REACH_DES)
+                    return;
+                }
+                if (DRIVER_STATUS == REACH_DES) {
                     receivePass();//接到乘客
-                if (DRIVER_STATUS == RECEIVE)
+                    return;
+                }
+                if (DRIVER_STATUS == RECEIVE) {
                     reachEnd();//到达目的地
+                    return;
+                }
                 break;
         }
     }
@@ -292,6 +316,27 @@ public class MapNavActivity extends BaseActivity implements AMap.OnMapLoadedList
     private void receivePass() {
         DRIVER_STATUS = RECEIVE;
         mSubmit.setText("到达目的地");
+        mSubmit.setBackgroundResource(R.color.org);
+        //回传数据到服务器
+        mApi.meetPass(mOrderBean.data.order_id).enqueue(new CallBack<JsonObject>() {
+            @Override
+            public boolean onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
+                if (ResponseUtil.getStatus(response.body()) == 1) {
+                    Log.d("lcuas", "服务器已收到接到乘客的确认");
+                    //开始绘制乘客起点到乘客终点的路线和marker
+                    searchRouteResult(mStartPoint, mEndPoint, ROUTE_TYPE_DRIVE, RouteSearch.DrivingDefault);
+                } else{
+                    Log.e("lcuas", "没有收到确认或者司机未登录");
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public void onFailure1(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
     }
 
     //到达上车地点
@@ -304,6 +349,15 @@ public class MapNavActivity extends BaseActivity implements AMap.OnMapLoadedList
     //到达目的地
     private void reachEnd() {
         DRIVER_STATUS = REACH_END_POINT;
+        //进入订单详情
+        Intent intent = new Intent(this, OrderInfoActivity.class);
+        intent.putExtra("order", mOrderBean);
+        intent.putExtra("city",mCity);
+        intent.putExtra("km",DrivingRouteOverLay.calculateDistance(
+                new LatLng(mStartPoint.getLatitude(),mStartPoint.getLongitude())
+                ,new LatLng(mEndPoint.getLatitude(),mEndPoint.getLongitude())
+        ));
+        startActivity(intent);
     }
 
     /**

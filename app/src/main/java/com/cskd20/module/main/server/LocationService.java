@@ -2,7 +2,6 @@ package com.cskd20.module.main.server;
 
 import android.app.Service;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -12,7 +11,6 @@ import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps2d.model.LatLng;
 import com.cskd20.module.main.utils.LocationUtil;
-import com.cskd20.utils.LogUtils;
 
 /**
  * 定位服务
@@ -32,7 +30,7 @@ public class LocationService extends Service implements AMapLocationListener {
     private void init() {
         mLocationUtil = new LocationUtil(this);
         mLocationUtil.setLocationChangeListener(this);
-        LogUtils.d("定位服务已开启");
+        Log.d("lucas", "定位服务已开启");
     }
 
     @Override
@@ -51,6 +49,7 @@ public class LocationService extends Service implements AMapLocationListener {
             LatLng mDriverPoint = new LatLng(location.getLatitude(), location.getLongitude());
             Log.d("lucas", "定位成功");
             Log.d("lucas", "mPoint:" + mDriverPoint);
+//            Toast.makeText(this, "mDriverPoint:" + mDriverPoint, Toast.LENGTH_SHORT).show();
             if (mListener != null)
                 mListener.onLocationChanged(location);
         }
@@ -84,13 +83,13 @@ public class LocationService extends Service implements AMapLocationListener {
     }
 
     public interface LocationChangeListener {
-        void onLocationChanged(Location location);
+        void onLocationChanged(AMapLocation location);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         stopSelf();
-        LogUtils.d("定位服务已停止");
+        Log.d("lucas", "定位服务已停止");
     }
 }

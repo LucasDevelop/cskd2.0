@@ -84,8 +84,10 @@ public class MainFragment extends BaseFragment implements OrderPopup.OnCloseList
                 } else {
                     if (count % 2 == 0) {//开始请求订单
                         currentStatus = TAKING;
+                        mSearch.start();
                         startSearch();
                     } else {//停止请求订单
+                        mSearch.stop();
                         currentStatus = NORMAL;
                         mOrderBind.stopRequest();
                     }
@@ -142,7 +144,6 @@ public class MainFragment extends BaseFragment implements OrderPopup.OnCloseList
     //开始请求订单
     private void startSearch() {
         mOrderBind.startRequest(true);
-        //        startActivity(new Intent(getActivity(), MapNavActivity.class));
     }
 
     @Override

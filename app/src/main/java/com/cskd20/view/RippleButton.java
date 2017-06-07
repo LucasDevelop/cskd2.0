@@ -129,7 +129,7 @@ public class RippleButton extends LinearLayout implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         mListener.onClick(v);
-        if (!mIsStart)
-            showWaveAnimation();
+//        if (!mIsStart)
+//            showWaveAnimation();
     }
 }

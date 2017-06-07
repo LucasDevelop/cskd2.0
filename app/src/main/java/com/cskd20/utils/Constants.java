@@ -21,42 +21,45 @@ public interface Constants {
     String LNG        = "lng", LAT = "lat";
 
     //域名
-    String URI      = "http://www.chengshikuaidao.com:8080/index.php/Api/";
+    String URI      = "http://www.chengshikuaidao.com:8080/index.php/Api/ApiDriver/";
     //本地域名
-    String TEST_URI = "http://192.168.2.117/index.php/Api/";
+    String TEST_URI = "http://www.chengshikuaidao.com:6060/index.php/Api/ApiDriver/";
 //    http://www.chengshikuaidao.com:6060/index.php/Api/
 //    http://192.168.2.117/index.php/Api/
 
     //登录接口
-    String LOGIN = "ApiDriver/login";
+    String LOGIN = "login";
 
     //注册
-    String REGISTER = "ApiDriver/register";
+    String REGISTER = "register";
 
     //发送验证码
-    String SEND_CODE = "ApiDriver/send_Code";
+    String SEND_CODE = "send_Code";
 
     //检查验证码
-    String CHECK_PHONE = "ApiDriver/checkPhone";
+    String CHECK_PHONE = "checkPhone";
 
     //校验验证码
-    String CHECK_CODE = "ApiDriver/checkCode";
+    String CHECK_CODE = "checkCode";
 
     //图片上传
-    String UPLOAD_IMG = "ApiDriver/upload_pic";
+    String UPLOAD_IMG = "upload_pic";
 
     //修改密码
-    String MIDF_PWD = "ApiDriver/change_password";
+    String MIDF_PWD = "change_password";
 
     //车型
-    String CAR_TYPE = "ApiDriver/get_cars";
+    String CAR_TYPE = "get_cars";
 
     //司机注册
-    String DRIVE_REGISTER = "ApiDriver/drive_register";
+    String DRIVE_REGISTER = "drive_register";
 
     //获取订单
-    String GET_ORDER = "ApiDriver/get_order";
+    String GET_ORDER = "get_order";
 
-    //确认接单
-    String ORDER_TAKING = "ApiDriver/meet_passenger";
+    //确认接到乘客
+    String MEET_PASSENGER = "meet_passenger";
+
+    //返回价格详情
+    String push_price_info = "arrive_destination";
 }

@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@color/bg_color"
-              android:orientation="vertical">
+             >
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -154,11 +159,12 @@
         android:textColor="@color/colorMain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-
+</LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true"
         android:padding="10dp">
 
         <RelativeLayout
@@ -227,4 +233,4 @@
                 android:textColor="@color/black"/>
         </LinearLayout>
     </RelativeLayout>
-</LinearLayout>
+</RelativeLayout>

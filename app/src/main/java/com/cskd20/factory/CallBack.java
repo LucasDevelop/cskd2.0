@@ -19,38 +19,41 @@ import retrofit2.Response;
 
 public abstract class CallBack<T> implements Callback<T> {
     @Override
-    public void onResponse(Call<T> call, Response<T> response){
-        if (response==null||response.body()==null) {
+    public void onResponse(Call<T> call, Response<T> response) {
+        if (response == null || response.body() == null) {
             Log.e("net", "respense == null?");
             return;
         }
         Log.d("net", "call.request().url():" + call.request().url());
         Log.d("net", "json:" + response.body().toString());
         if (response.body() instanceof JsonObject) {
-            boolean isToast = onResponse1(call, response);
+            int status = ResponseUtil.getStatus((JsonObject) response.body());
+            boolean isToast = false;
+            if (status >= 1)
+                isToast = onResponse1(call, response);
             //如果获取数据失败
-            if (ResponseUtil.getStatus((JsonObject) response.body()) == 0) {
+            if (status == 0) {
                 if (isToast)
                     Toast.makeText(App.getContext(), ResponseUtil.getMsg((JsonObject) response.body()), Toast
                             .LENGTH_SHORT).show();
             }
         }
     }
+
     @Override
-    public void onFailure(Call<T> call, Throwable t){
+    public void onFailure(Call<T> call, Throwable t) {
         Log.d("net", "url:" + call.request().url());
         t.printStackTrace();
-        onFailure1(call,t);
+        onFailure1(call, t);
     }
 
     /**
-     *
      * @param call
      * @param response
      * @return 是否toast 提示
      */
     public abstract boolean onResponse1(Call<T> call, Response<T> response);
 
-    public abstract void onFailure1(Call<T> call, Throwable t) ;
+    public abstract void onFailure1(Call<T> call, Throwable t);
 
 }

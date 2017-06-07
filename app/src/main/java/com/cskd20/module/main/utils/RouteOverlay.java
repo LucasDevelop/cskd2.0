@@ -157,7 +157,7 @@ public class RouteOverlay {
                 .icon(getDriveBitmapDescriptor())
         .title("\u8D77\u70B9"));
         endMarker = mAMap.addMarker(new MarkerOptions().position(endPoint)
-        .icon(getEndBitmapDescriptor()).title("\u7EC8\u70B9"));
+        .icon(getStartBitmapDescriptor()).title("\u7EC8\u70B9"));
     }
 
     /**
