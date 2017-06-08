@@ -5,13 +5,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.location.Location;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 
+import com.amap.api.location.AMapLocation;
 import com.amap.api.maps2d.model.LatLng;
 import com.cskd20.App;
 import com.cskd20.factory.CallBack;
@@ -96,6 +96,10 @@ public class RequestOrderService extends Service implements LocationService.Loca
             Log.d("lucas", "开启接单任务");
         }
 
+        public void startGrabOrder(String orderId) {
+            mTimeTask.grabOrder(orderId);
+        }
+
         public void stopRequest() {
             mTimeTask.stopTask();
             Log.d("lucas", "停止接单任务");
@@ -140,6 +144,8 @@ public class RequestOrderService extends Service implements LocationService.Loca
     //心跳
     public class TimeTask implements Runnable {
         int count;
+        private boolean mIsGrab;//是否抢单
+        private String  mOrderId;
 
         public boolean isStart() {
             return mIsStart;
@@ -152,17 +158,25 @@ public class RequestOrderService extends Service implements LocationService.Loca
             mIsStart = true;
             String lng = mDriverLocation.longitude + "";
             String lat = mDriverLocation.latitude + "";
-            String orderType = (String) SPUtils.get(mContext, Constants.ORDER_TYPE, "");
-            String autoOrder = (String) SPUtils.get(mContext, Constants.AUTO_ORDER, "");
+            String orderType = (String) SPUtils.get(mContext, Constants.ORDER_TYPE, "[1]");
+            String autoOrder = (String) SPUtils.get(mContext, Constants.AUTO_ORDER, "0");
             String id = App.getUser().data.id;
-            //            mCall = CommonFactory.getApiInstance().getOrder(id, lng, lat, autoOrder, orderType, "");
-            mCall = CommonFactory.getApiInstance().getOrder("1", "113.9865709127455", "22.46598997406529", "0", "[1," +
-                    "3,5]", "");
+            String orderId = "";
+            if ("1".equals(autoOrder) && mIsGrab)
+                orderId = mOrderId;
+
+            mCall = CommonFactory.getApiInstance().getOrder(id, lng, lat, autoOrder, orderType, orderId);
+            //            mCall = CommonFactory.getApiInstance().getOrder("1", "113.9865709127455",
+            // "22.46598997406529", "0", "[1," +
+            //                    "3,5]", "");
             mCall.enqueue(new CallBack<JsonObject>() {
                 @Override
                 public boolean onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
                     if (mBind != null && mBind.mListener != null)
-                        mBind.mListener.onResponse1(call, response);
+                        if (mIsGrab)
+                            mBind.mListener.onGrabResponse(call, response);
+                        else
+                            mBind.mListener.onResponse1(call, response);
                     return false;
                 }
 
@@ -172,15 +186,27 @@ public class RequestOrderService extends Service implements LocationService.Loca
                         mBind.mListener.onFailure1(call, t);
                 }
             });
-            mHandler.postDelayed(this, Constants.REQUEST_ORDER_RATE);
-            Log.d("lucas", "订单请求次数:" + count++);
+            if ("1".equals(autoOrder) && mIsGrab) {
+
+            } else {
+                mHandler.postDelayed(this, Constants.REQUEST_ORDER_RATE);
+                Log.d("lucas", "订单请求次数:" + count++);
+            }
         }
 
         public void startTask() {
+            mIsGrab = false;
+            mHandler.post(this);
+        }
+
+        public void grabOrder(String orderId) {
+            mOrderId = orderId;
+            mIsGrab = true;
             mHandler.post(this);
         }
 
         public void stopTask() {
+            mIsGrab = false;
             mHandler.removeCallbacks(this);
             mCall.cancel();
             mIsStart = false;
@@ -191,10 +217,12 @@ public class RequestOrderService extends Service implements LocationService.Loca
         void onResponse1(Call<JsonObject> call, Response<JsonObject> response);
 
         void onFailure1(Call<JsonObject> call, Throwable t);
+
+        void onGrabResponse(Call<JsonObject> call, Response<JsonObject> response);
     }
 
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(AMapLocation location) {
         mDriverLocation = new LatLng(location.getLatitude(), location.getLongitude());
         LogUtils.d("司机定位成功");
     }

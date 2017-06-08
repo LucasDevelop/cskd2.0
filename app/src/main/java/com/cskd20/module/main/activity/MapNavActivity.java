@@ -41,6 +41,9 @@ import com.cskd20.utils.LogUtils;
 import com.cskd20.utils.ResponseUtil;
 import com.google.gson.JsonObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import butterknife.Bind;
 import butterknife.OnClick;
 import retrofit2.Call;
@@ -79,14 +82,18 @@ public class MapNavActivity extends BaseActivity implements AMap.OnMapLoadedList
     private String           mDrivingLength;//距离乘客的距离
     private Marker           mDriverMarker;
 
-    private static final int               GOTO_PASS       = 1;//开始前往乘客位置
-    private static final int               REACH_DES       = 2;//到达乘客位置
-    private static final int               RECEIVE         = 3;//接到乘客
-    private static final int               REACH_END_POINT = 4;//到达目的地
-    private static final int               NORMAL          = 0;//待定
-    private              int               DRIVER_STATUS   = NORMAL;
+    public static final int GOTO_PASS       = 1;//开始前往乘客位置
+    public static final int REACH_DES       = 2;//到达乘客位置
+    public static final int RECEIVE         = 3;//接到乘客
+    public static final int REACH_END_POINT = 4;//到达目的地
+    public static final int NORMAL          = 0;//待定
+    public              int DRIVER_STATUS   = NORMAL;
+
+    public static final int DRIVER     = 100;//司机
+    public static final int PASS_START = 101;//乘客
+
     //定位服务
-    private              ServiceConnection locationConn    = new ServiceConnection() {
+    private ServiceConnection locationConn = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             mLocationBind = (LocationService.LocationBind) service;
@@ -102,7 +109,8 @@ public class MapNavActivity extends BaseActivity implements AMap.OnMapLoadedList
     };
     private LocationService.LocationBind mLocationBind;
     private OrderBean                    mOrderBean;
-    private String mCity;
+    private String                       mCity;
+    private String                       mReceivePassTime;
 
     @Override
     protected int setContentView() {
@@ -117,7 +125,6 @@ public class MapNavActivity extends BaseActivity implements AMap.OnMapLoadedList
         mOrderBean = (OrderBean) getIntent().getSerializableExtra("order");
         mStartTV.setText(mOrderBean.data.start_place);
         mEndTV.setText(mOrderBean.data.end_place);
-
         if (mOrderBean != null) {
             mStartPoint.setLatitude(mOrderBean.data.start_latitude);
             mStartPoint.setLongitude(mOrderBean.data.start_longitude);
@@ -138,14 +145,15 @@ public class MapNavActivity extends BaseActivity implements AMap.OnMapLoadedList
         //绑定定位
         bindService(new Intent(this, LocationService.class), locationConn, BIND_AUTO_CREATE);
         mMap.setOnMapLoadedListener(this);// 设置amap加载成功事件监听器
+        mMap.setOnMarkerClickListener(null);
         //标记乘客的起点
         //标记乘客的终点
         //        addMK(mStartPoint, startIC);
     }
 
     //设置起终点
-    private void addMK(LatLonPoint point, int id) {
-        mMap.addMarker(new MarkerOptions()
+    private Marker addMK(LatLonPoint point, int id) {
+        return mMap.addMarker(new MarkerOptions()
                 .position(AMapUtil.convertToLatLng(point))
                 .icon(BitmapDescriptorFactory.fromResource(id)));
     }
@@ -199,7 +207,19 @@ public class MapNavActivity extends BaseActivity implements AMap.OnMapLoadedList
 
         @Override
         public View getInfoWindow(Marker marker) {
-            View view = View.inflate(mContext, R.layout.map_info_window, null);
+            View view = null;
+            switch ((int) marker.getObject()) {
+                case PASS_START:
+                    view = View.inflate(mContext, R.layout.map_info_window, null);
+                    TextView length = (TextView) view.findViewById(R.id.length);
+                    TextView time = (TextView) view.findViewById(R.id.time);
+                    length.setText(mDrivingLength + "");
+                    time.setText(mDrivingToPassTime + "");
+                    break;
+                default:
+                    marker.hideInfoWindow();
+                    break;
+            }
             return view;
         }
 
@@ -230,37 +250,24 @@ public class MapNavActivity extends BaseActivity implements AMap.OnMapLoadedList
                         drivingRouteOverlay.setNodeIconVisibility(false);//设置节点marker是否显示
                         drivingRouteOverlay.setIsColorfulline(false);//是否用颜色展示交通拥堵情况，默认true
                         drivingRouteOverlay.removeFromMap();
-                        drivingRouteOverlay.addToMap(DRIVER_STATUS == RECEIVE);
+                        if (DRIVER_STATUS == NORMAL) {
+                            int dis = (int) drivePath.getDistance();
+                            int dur = (int) drivePath.getDuration();
+                            //时间、距离
+                            mDrivingToPassTime = AMapUtil.getFriendlyTime(dur);
+                            mDrivingLength = AMapUtil.getFriendlyLength(dis);
+                            String des = mDrivingToPassTime + "(" + mDrivingLength + ")";
+                            Log.d("lucas", "des:" + des);
+                        }
+                        drivingRouteOverlay.addToMap(DRIVER_STATUS);
                         drivingRouteOverlay.zoomToSpan();
                         //                        mBottomLayout.setVisibility(View.VISIBLE);
-                        int dis = (int) drivePath.getDistance();
-                        int dur = (int) drivePath.getDuration();
-                        //时间、距离
-                        mDrivingToPassTime = AMapUtil.getFriendlyTime(dur);
-                        mDrivingLength = AMapUtil.getFriendlyLength(dis);
-                        String des = mDrivingToPassTime + "(" + mDrivingLength + ")";
-                        Log.d("RouteSearchListener", des);
-                        //                        mRotueTimeDes.setText(des);
-                        //                        mRouteDetailDes.setVisibility(View.VISIBLE);
-                        int taxiCost = (int) mDriveRouteResult.getTaxiCost();
-                        //                        mRouteDetailDes.setText("打车约"+taxiCost+"元");
-                        //                        mBottomLayout.setOnClickListener(new View.OnClickListener() {
-                        //                            @Override
-                        //                            public void onClick(View v) {
-                        //                                Intent intent = new Intent(mContext,
-                        //                                        DriveRouteDetailActivity.class);
-                        //                                intent.putExtra("drive_path", drivePath);
-                        //                                intent.putExtra("drive_result",
-                        //                                        mDriveRouteResult);
-                        //                                startActivity(intent);
-                        //                            }
-                        //                        });
                     } else if (result != null && result.getPaths() == null) {
-                        //                        ToastUtil.show(mContext, R.string.no_result);
+                        Toast.makeText(mContext, "对不起，没有搜索到相关数据！", Toast.LENGTH_SHORT).show();
                     }
 
                 } else {
-                    //                    ToastUtil.show(mContext, R.string.no_result);
+                    Toast.makeText(mContext, "对不起，没有搜索到相关数据！", Toast.LENGTH_SHORT).show();
                 }
             } else {
                 //                ToastUtil.showerror(this.getApplicationContext(), errorCode);
@@ -323,9 +330,12 @@ public class MapNavActivity extends BaseActivity implements AMap.OnMapLoadedList
             public boolean onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
                 if (ResponseUtil.getStatus(response.body()) == 1) {
                     Log.d("lcuas", "服务器已收到接到乘客的确认");
+                    //记录时间
+                    mReceivePassTime = new SimpleDateFormat("yyyyMMddHHmm").format(new Date(System.currentTimeMillis
+                            ()));
                     //开始绘制乘客起点到乘客终点的路线和marker
                     searchRouteResult(mStartPoint, mEndPoint, ROUTE_TYPE_DRIVE, RouteSearch.DrivingDefault);
-                } else{
+                } else {
                     Log.e("lcuas", "没有收到确认或者司机未登录");
                     return true;
                 }
@@ -352,10 +362,12 @@ public class MapNavActivity extends BaseActivity implements AMap.OnMapLoadedList
         //进入订单详情
         Intent intent = new Intent(this, OrderInfoActivity.class);
         intent.putExtra("order", mOrderBean);
-        intent.putExtra("city",mCity);
-        intent.putExtra("km",DrivingRouteOverLay.calculateDistance(
-                new LatLng(mStartPoint.getLatitude(),mStartPoint.getLongitude())
-                ,new LatLng(mEndPoint.getLatitude(),mEndPoint.getLongitude())
+        intent.putExtra("city", mCity);
+        intent.putExtra("time", mReceivePassTime);
+        // TODO: 2017/6/8 0008 距离算法保留
+        intent.putExtra("km", DrivingRouteOverLay.calculateDistance(
+                new LatLng(mStartPoint.getLatitude(), mStartPoint.getLongitude())
+                , new LatLng(mEndPoint.getLatitude(), mEndPoint.getLongitude())
         ));
         startActivity(intent);
     }
@@ -411,6 +423,8 @@ public class MapNavActivity extends BaseActivity implements AMap.OnMapLoadedList
             mLocationBind.stop();
         if (mMapView != null)
             mMapView.onDestroy();
+
+        unbindService(locationConn);
     }
 
 }

@@ -16,6 +16,7 @@ import com.amap.api.services.route.DrivePath;
 import com.amap.api.services.route.DriveStep;
 import com.amap.api.services.route.TMC;
 import com.cskd20.R;
+import com.cskd20.module.main.activity.MapNavActivity;
 import com.cskd20.utils.AMapUtil;
 
 import java.util.ArrayList;
@@ -77,9 +78,9 @@ public class DrivingRouteOverLay extends RouteOverlay {
     /**
      * 添加驾车路线添加到地图上显示。
      *
-     * @param IS_RECEIVE 是否接到乘客
+     * @param status 当前司机状态
      */
-    public void addToMap(boolean IS_RECEIVE) {
+    public void addToMap(int status) {
         initPolylineOptions();
         try {
             if (mAMap == null) {
@@ -113,12 +114,14 @@ public class DrivingRouteOverLay extends RouteOverlay {
                 endMarker = null;
             }
             // TODO: 2017/6/6 0006
-            if (IS_RECEIVE)
+            if (status == MapNavActivity.RECEIVE)
                 addPassStartAndEndMarker();
             else
                 addDriveFromPassStartMarker();
             //添加中途经过点
             addThroughPointMarker();
+
+            endMarker.showInfoWindow();
             if (isColorfulline && tmcs.size() > 0) {
                 colorWayUpdate(tmcs);
             } else {

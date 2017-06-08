@@ -6,14 +6,19 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import com.cskd20.R;
 import com.cskd20.base.BaseActivity;
+import com.cskd20.module.main.event.MessageEvent;
 import com.cskd20.utils.Constants;
 import com.cskd20.utils.SPUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.Bind;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
 public class ModeSettingActivity extends BaseActivity {
@@ -41,7 +46,27 @@ public class ModeSettingActivity extends BaseActivity {
 
     @Override
     protected void initView(@Nullable Bundle savedInstanceState) {
-
+        String auto = (String) SPUtils.get(mContext, Constants.AUTO_ORDER, "0");
+        mOrderTaking.setChecked(auto.equals("1") ? true : false);
+        String type = (String) SPUtils.get(mContext, Constants.ORDER_TYPE, "[1]");
+        if (type.contains("1"))
+            mConvCar.setChecked(true);
+        if (type.contains("2"))
+            mCommerceCar.setChecked(true);
+        if (type.contains("3"))
+            mAcceptCar.setChecked(true);
+        if (type.contains("4"))
+            mCarpool.setChecked(true);
+        if (type.contains("5"))
+            mShuttle.setChecked(true);
+        if (type.contains("1,2,3,4,5")) {
+            mConvCar.setChecked(true);
+            mCommerceCar.setChecked(true);
+            mAcceptCar.setChecked(true);
+            mCarpool.setChecked(true);
+            mShuttle.setChecked(true);
+            mAll.setChecked(true);
+        }
     }
 
     @OnClick(R.id.submit)
@@ -53,20 +78,33 @@ public class ModeSettingActivity extends BaseActivity {
         }
     }
 
+    @OnCheckedChanged(R.id.cb_all)
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+            mConvCar.setChecked(true);
+            mCommerceCar.setChecked(true);
+            mAcceptCar.setChecked(true);
+            mCarpool.setChecked(true);
+            mShuttle.setChecked(true);
+        }
+    }
+
     private void save() {
-        StringBuilder sb = new StringBuilder("{");
+        StringBuilder sb = new StringBuilder("[");
         String s1 = mConvCar.isChecked() ? "1" : "";
         sb.append(TextUtils.isEmpty(s1) ? "" : s1);
-        String s2 = mConvCar.isChecked() ? "2" : "";
+        String s2 = mCommerceCar.isChecked() ? "2" : "";
         sb.append(TextUtils.isEmpty(s2) ? "" : "," + s2);
-        String s3 = mConvCar.isChecked() ? "3" : "";
+        String s3 = mAcceptCar.isChecked() ? "3" : "";
         sb.append(TextUtils.isEmpty(s3) ? "" : "," + s3);
-        String s4 = mConvCar.isChecked() ? "4" : "";
+        String s4 = mCarpool.isChecked() ? "4" : "";
         sb.append(TextUtils.isEmpty(s4) ? "" : "," + s4);
-        String s5 = mConvCar.isChecked() ? "5" : "";
-        sb.append(TextUtils.isEmpty(s5) ? "" : "," + s5 + "}");
+        String s5 = mShuttle.isChecked() ? "5" : "";
+        sb.append(TextUtils.isEmpty(s5) ? "]" : "," + s5 + "]");
         Log.d("lucas", sb.toString());
-        SPUtils.put(mContext, Constants.ORDER_TYPE, sb.toString());
-        SPUtils.put(mContext, Constants.AUTO_ORDER, mOrderTaking.isChecked()?"1":"0");
+        SPUtils.put(mContext, Constants.ORDER_TYPE, mAll.isChecked()?"[1,2,3,4,5]":sb.toString());
+        SPUtils.put(mContext, Constants.AUTO_ORDER, mOrderTaking.isChecked() ? "1" : "0");
+        EventBus.getDefault().post(new MessageEvent(mOrderTaking.isChecked(), sb.toString()));
+        finish();
     }
 }

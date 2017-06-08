@@ -25,7 +25,7 @@ public interface Constants {
     //本地域名
     String TEST_URI = "http://www.chengshikuaidao.com:6060/index.php/Api/ApiDriver/";
 //    http://www.chengshikuaidao.com:6060/index.php/Api/
-//    http://192.168.2.117/index.php/Api/
+//    http://192.168.2.104/index.php/Api/
 
     //登录接口
     String LOGIN = "login";

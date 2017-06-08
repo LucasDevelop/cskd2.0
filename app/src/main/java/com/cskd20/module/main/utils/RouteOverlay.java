@@ -15,6 +15,7 @@ import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.Polyline;
 import com.amap.api.maps2d.model.PolylineOptions;
 import com.cskd20.R;
+import com.cskd20.module.main.activity.MapNavActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -158,6 +159,7 @@ public class RouteOverlay {
         .title("\u8D77\u70B9"));
         endMarker = mAMap.addMarker(new MarkerOptions().position(endPoint)
         .icon(getStartBitmapDescriptor()).title("\u7EC8\u70B9"));
+        endMarker.setObject(MapNavActivity.PASS_START);
     }
 
     /**

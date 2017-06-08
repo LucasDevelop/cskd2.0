@@ -16,10 +16,14 @@ import com.cskd20.api.ApiService;
 import com.cskd20.factory.CommonFactory;
 import com.cskd20.imp.LoadingImp;
 import com.cskd20.popup.LoadingPop;
+import com.google.gson.Gson;
+import com.umeng.message.PushAgent;
 
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
+
+import static anet.channel.util.Utils.context;
 
 /**
  * @创建者 lucas
@@ -32,6 +36,7 @@ public abstract class BaseActivity extends AppCompatActivity implements LoadingI
     protected Context mContext;
     private static ArrayList<BaseActivity> mActivities = new ArrayList<>();
     public         ApiService              mApi        = CommonFactory.getApiInstance();
+    public         Gson                    mGson       = CommonFactory.getGsonInstance();
     private LoadingPop mLoadingPop;
     private View       mRootView;
     public Handler mHandler = new Handler();
@@ -40,6 +45,7 @@ public abstract class BaseActivity extends AppCompatActivity implements LoadingI
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        PushAgent.getInstance(context).onAppStart();
         mContext = getApplicationContext();
         setContentView(setContentView());
         ButterKnife.bind(this);

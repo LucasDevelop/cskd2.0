@@ -48,6 +48,7 @@
 
                 <CheckBox
                     android:id="@+id/cb_conv_car"
+                    android:checked="true"
                     style="@style/checkbox"/>
 
                 <TextView

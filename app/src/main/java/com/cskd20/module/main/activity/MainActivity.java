@@ -13,7 +13,6 @@ import com.cskd20.module.main.adapter.MainFragmentAdapter;
 import com.cskd20.module.main.fragment.MainFragment;
 import com.cskd20.module.main.server.LocationService;
 import com.cskd20.module.personal.fragment.PersonalFragment;
-import com.cskd20.module.main.fragment.ServerFragment;
 
 import java.util.ArrayList;
 
@@ -38,11 +37,11 @@ public class MainActivity extends BaseActivity {
         ArrayList<BaseFragment> fragments = new ArrayList<>();
         fragments.add(new PersonalFragment());
         fragments.add(new MainFragment());
-        fragments.add(new ServerFragment());
+//        fragments.add(new ServerFragment());
         ArrayList<String> titles = new ArrayList<>();
         titles.add("我的");
         titles.add("首页");
-        titles.add("服务站");
+//        titles.add("服务站");
         MainFragmentAdapter fragmentAdapter = new MainFragmentAdapter(getSupportFragmentManager(), fragments,
                 titles);
         mTab.addTab(mTab.newTab().setText(titles.get(0)));

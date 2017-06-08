@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/bg_color"
     android:orientation="vertical"
+    android:id="@+id/root"
     tools:context="com.cskd20.module.main.activity.OrderInfoActivity">
 
     <RelativeLayout
@@ -122,148 +123,165 @@
 
 
     <LinearLayout
-        android:layout_marginTop="10dp"
-        android:orientation="vertical"
-        android:padding="10dp"
-        android:background="#fff"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="#fff"
+        android:orientation="vertical"
+        android:padding="10dp">
+
         <TextView
             android:id="@+id/charging"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_margin="20dp"
             android:text="4.1元"
             android:textColor="@color/org"
-            android:textSize="28sp"
-            android:layout_margin="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:textSize="28sp"/>
+
         <TextView
             android:id="@+id/car_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
             android:text="方便快车"
             android:textColor="@color/black"
-            android:layout_marginLeft="15dp"
-            android:textSize="18sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:textSize="18sp"/>
+
         <LinearLayout
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal"
-            android:layout_margin="10dp"
-            android:gravity="center_vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
             <TextView
-                android:textSize="16sp"
                 android:id="@+id/length"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="里程3.6公里"
                 android:textColor="@color/black"
-                android:gravity="center"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"/>
+                android:textSize="16sp"/>
+
             <View
-                android:background="@color/devider"
                 android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_height="1px"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_height="1px"/>
+                android:layout_weight="1"
+                android:background="@color/devider"/>
+
             <TextView
                 android:id="@+id/length_charging"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="4.3元"
                 android:textColor="@color/black"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"/>
+                android:textSize="16sp"/>
         </LinearLayout>
+
         <LinearLayout
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal"
-            android:layout_margin="10dp"
-            android:gravity="center_vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
             <TextView
-                android:textSize="16sp"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="服务费"
                 android:textColor="@color/black"
-                android:gravity="center"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"/>
+                android:textSize="16sp"/>
+
             <View
-                android:background="@color/devider"
                 android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_height="1px"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_height="1px"/>
+                android:layout_weight="1"
+                android:background="@color/devider"/>
+
             <TextView
                 android:id="@+id/server_charging"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="-3元"
                 android:textColor="@color/black"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"/>
+                android:textSize="16sp"/>
         </LinearLayout>
+
         <LinearLayout
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal"
-            android:layout_margin="10dp"
-            android:gravity="center_vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
             <TextView
-                android:textSize="16sp"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="红包"
                 android:textColor="@color/black"
-                android:gravity="center"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"/>
+                android:textSize="16sp"/>
+
             <View
-                android:background="@color/devider"
                 android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_height="1px"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_height="1px"/>
+                android:layout_weight="1"
+                android:background="@color/devider"/>
+
             <TextView
                 android:id="@+id/red_packet"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="3元"
                 android:textColor="@color/black"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"/>
+                android:textSize="16sp"/>
         </LinearLayout>
+
         <LinearLayout
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal"
-            android:layout_margin="10dp"
-            android:gravity="center_vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
             <TextView
-                android:textSize="16sp"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="高速费"
                 android:textColor="@color/black"
-                android:gravity="center"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"/>
+                android:textSize="16sp"/>
+
             <EditText
-                android:layout_marginLeft="10dp"
                 android:id="@+id/expressway"
-                android:padding="5dp"
-                android:text="4.3元"
-                android:background="@drawable/bt_layer_gray"
-                android:textColor="@color/black"
-                android:textSize="16sp"
                 android:layout_width="110dp"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/bt_layer_gray"
+                android:padding="5dp"
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
         </LinearLayout>
     </LinearLayout>
 
     <Button
+        android:id="@+id/send"
         style="@style/submitBt"
         android:layout_marginTop="30dp"
         android:text="确认并发送"

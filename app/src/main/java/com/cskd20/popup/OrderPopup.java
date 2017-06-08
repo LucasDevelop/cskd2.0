@@ -60,7 +60,7 @@ public class OrderPopup extends PopupWindow {
         this.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         setOutsideTouchable(false);
         ColorDrawable dw = new ColorDrawable(0x0000);
-        //        设置PopupWindow弹出窗体的背景
+        //设置PopupWindow弹出窗体的背景
         this.setBackgroundDrawable(dw);
     }
 
