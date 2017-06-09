@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.cskd20.R;
@@ -47,6 +48,7 @@ public abstract class BaseActivity extends AppCompatActivity implements LoadingI
         super.onCreate(savedInstanceState);
         PushAgent.getInstance(context).onAppStart();
         mContext = getApplicationContext();
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(setContentView());
         ButterKnife.bind(this);
         initCommon();
@@ -64,7 +66,7 @@ public abstract class BaseActivity extends AppCompatActivity implements LoadingI
     /**
      * 通用初始化
      */
-    private void initCommon() {
+    protected void initCommon() {
         //设置横屏模式
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         //获取全局的根布局
@@ -78,7 +80,7 @@ public abstract class BaseActivity extends AppCompatActivity implements LoadingI
             mActivities.add(this);
         }
 
-        mLoadingPop = new LoadingPop(this);
+//        mLoadingPop = new LoadingPop(this);
 
     }
 

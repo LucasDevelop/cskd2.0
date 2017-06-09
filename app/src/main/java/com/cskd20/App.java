@@ -8,9 +8,6 @@ import android.widget.Toast;
 
 import com.cskd20.bean.LoginBean;
 import com.cskd20.module.login.activity.LoginActivity;
-import com.cskd20.module.main.server.UmengNotificationService;
-import com.cskd20.utils.Constants;
-import com.cskd20.utils.SPUtils;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechUtility;
 import com.umeng.message.IUmengRegisterCallback;
@@ -26,12 +23,15 @@ public class App extends Application {
 
     private static Context mContext;
 
-    public String getDeviceToken() {
+
+    private static String mDeviceToken;
+
+
+    private static LoginBean user;
+
+    public static String getDeviceToken() {
         return mDeviceToken;
     }
-
-    private String mDeviceToken;
-
     public static LoginBean getUser() {
         return user;
     }
@@ -48,17 +48,10 @@ public class App extends Application {
         user = user1;
     }
 
-    private static LoginBean user;
-
     @Override
     public void onCreate() {
         super.onCreate();
         mContext = this.getApplicationContext();
-
-        //初始化
-        //初始化接单模式
-        SPUtils.put(mContext, Constants.AUTO_ORDER,"0");
-        SPUtils.put(mContext,Constants.ORDER_TYPE,"[1]");
 
         //初始化讯飞语音
         // 将“12345678”替换成您申请的APPID，申请地址：http://www.xfyun.cn
@@ -84,10 +77,12 @@ public class App extends Application {
 
             }
         });
-        mPushAgent.setPushIntentServiceClass(UmengNotificationService.class);
+
     }
 
     public static Context getContext(){
         return mContext;
     }
+
+
 }

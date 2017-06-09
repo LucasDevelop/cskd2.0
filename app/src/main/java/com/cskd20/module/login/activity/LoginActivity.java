@@ -72,7 +72,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         }
         try {
 
-        CommonFactory.getApiInstance().login(username, pwd)
+            String deviceToken = App.getDeviceToken();
+            CommonFactory.getApiInstance().login(username, pwd, deviceToken)
                 .enqueue(new CallBack<JsonObject>() {
                     @Override
                     public boolean onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
@@ -106,5 +107,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private void OpenMain() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 }

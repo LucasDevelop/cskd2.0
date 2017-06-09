@@ -142,10 +142,11 @@ public class RouteOverlay {
         startMarker = mAMap.addMarker((new MarkerOptions())
                 .position(startPoint).icon(getStartBitmapDescriptor())
                 .title("\u8D77\u70B9"));
-        // startMarker.showInfoWindow();
+         startMarker.hideInfoWindow();
 
         endMarker = mAMap.addMarker((new MarkerOptions()).position(endPoint)
                 .icon(getEndBitmapDescriptor()).title("\u7EC8\u70B9"));
+        endMarker.hideInfoWindow();
         // mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startPoint,
         // getShowRouteZoom()));
     }
@@ -248,6 +249,9 @@ public class RouteOverlay {
 
     protected int getDriveColor() {
         return Color.parseColor("#0ebc0e");
+    }
+    protected int getPassColor() {
+        return Color.parseColor("#f00");
     }
 
     // protected int getShowRouteZoom() {

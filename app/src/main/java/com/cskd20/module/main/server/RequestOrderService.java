@@ -186,7 +186,7 @@ public class RequestOrderService extends Service implements LocationService.Loca
                         mBind.mListener.onFailure1(call, t);
                 }
             });
-            if ("1".equals(autoOrder) && mIsGrab) {
+            if ("0".equals(autoOrder) && mIsGrab) {
 
             } else {
                 mHandler.postDelayed(this, Constants.REQUEST_ORDER_RATE);
@@ -208,8 +208,9 @@ public class RequestOrderService extends Service implements LocationService.Loca
         public void stopTask() {
             mIsGrab = false;
             mHandler.removeCallbacks(this);
-            mCall.cancel();
             mIsStart = false;
+            if (mCall != null)
+                mCall.cancel();
         }
     }
 

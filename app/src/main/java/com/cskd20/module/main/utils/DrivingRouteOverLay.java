@@ -81,7 +81,10 @@ public class DrivingRouteOverLay extends RouteOverlay {
      * @param status 当前司机状态
      */
     public void addToMap(int status) {
-        initPolylineOptions();
+//        if (status != MapNavActivity.RECEIVE)
+            initPolylineOptions();
+//        else
+//            initStartToEndOptions();
         try {
             if (mAMap == null) {
                 return;
@@ -125,6 +128,7 @@ public class DrivingRouteOverLay extends RouteOverlay {
             if (isColorfulline && tmcs.size() > 0) {
                 colorWayUpdate(tmcs);
             } else {
+                //显示对应路线的衍射
                 showPolyline();
             }
 
@@ -134,12 +138,21 @@ public class DrivingRouteOverLay extends RouteOverlay {
     }
 
     /**
-     * 初始化线段属性
+     * 初始化线段属性---司机到乘客的路线颜色
      */
     private void initPolylineOptions() {
 
         mPolylineOptions = null;
 
+        mPolylineOptions = new PolylineOptions();
+        mPolylineOptions.color(getDriveColor()).width(getRouteWidth());
+    }
+
+    /**
+     * 乘客起点到终点的路线颜色
+     */
+    private void initStartToEndOptions() {
+        mPolylineOptions = null;
         mPolylineOptions = new PolylineOptions();
         mPolylineOptions.color(getDriveColor()).width(getRouteWidth());
     }

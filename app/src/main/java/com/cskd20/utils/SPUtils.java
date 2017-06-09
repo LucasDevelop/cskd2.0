@@ -43,8 +43,9 @@ public class SPUtils {
         } else {
             editor.putString(key, object.toString());
         }
-
-        SharedPreferencesCompat.apply(editor);
+        editor.apply();
+//        editor.commit();
+//        SharedPreferencesCompat.apply(editor);
     }
 
     /**

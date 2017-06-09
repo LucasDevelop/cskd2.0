@@ -47,8 +47,8 @@ public class LocationService extends Service implements AMapLocationListener {
     public void onLocationChanged(AMapLocation location) {
         if (location != null) {
             LatLng mDriverPoint = new LatLng(location.getLatitude(), location.getLongitude());
-            Log.d("lucas", "定位成功");
-            Log.d("lucas", "mPoint:" + mDriverPoint);
+//            Log.d("lucas", "定位成功");
+//            Log.d("lucas", "mPoint:" + mDriverPoint);
 //            Toast.makeText(this, "mDriverPoint:" + mDriverPoint, Toast.LENGTH_SHORT).show();
             if (mListener != null)
                 mListener.onLocationChanged(location);

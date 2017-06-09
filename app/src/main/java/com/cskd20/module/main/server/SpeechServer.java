@@ -23,12 +23,12 @@ import static org.greenrobot.eventbus.EventBus.TAG;
 
 public class SpeechServer {
 
-    private final SpeechSynthesizer mTts;
-    private Context mContext;
+    private final  SpeechSynthesizer mTts;
+    private        Context           mContext;
     // 引擎类型
     private String mEngineType = SpeechConstant.TYPE_CLOUD;
     // 默认发音人
-    private String voicer = "xiaoyan";
+    private String voicer      = "xiaoyan";
 
     public SpeechServer(Context context) {
         // 初始化合成对象
@@ -36,19 +36,28 @@ public class SpeechServer {
         mContext = context;
     }
 
-    public void stopSpeek(){
+//    public static SpeechServer getInstance(Context context) {
+//        if (speechServer == null)
+////            synchronized (SpeechServer.class) {
+////                if (speechServer == null)
+//                    speechServer = new SpeechServer(context);
+////            }
+//        return speechServer;
+//    }
+
+    public void stopSpeek() {
         mTts.stopSpeaking();
     }
 
-    public void pauseSpeek(){
+    public void pauseSpeek() {
         mTts.pauseSpeaking();
     }
 
-    public void resumeSpeek(){
+    public void resumeSpeek() {
         mTts.resumeSpeaking();
     }
 
-    public void startSpeek(String speekMsg){
+    public void startSpeek(String speekMsg) {
 
         // 开始合成
         // 收到onCompleted 回调时，合成结束、生成合成音频
@@ -67,10 +76,10 @@ public class SpeechServer {
         //			int code = mTts.synthesizeToUri(text, path, mTtsListener);
 
         if (code != ErrorCode.SUCCESS) {
-            if(code == ErrorCode.ERROR_COMPONENT_NOT_INSTALLED){
+            if (code == ErrorCode.ERROR_COMPONENT_NOT_INSTALLED) {
                 //未安装则跳转到提示安装页面
-//                mInstaller.install();
-            }else {
+                //                mInstaller.install();
+            } else {
                 Log.d(TAG, "语音合成失败,错误码: " + code);
             }
         }
@@ -83,42 +92,42 @@ public class SpeechServer {
 
         @Override
         public void onSpeakBegin() {
-//            showTip("开始播放");
+            //            showTip("开始播放");
         }
 
         @Override
         public void onSpeakPaused() {
-//            showTip("暂停播放");
+            //            showTip("暂停播放");
         }
 
         @Override
         public void onSpeakResumed() {
-//            showTip("继续播放");
+            //            showTip("继续播放");
         }
 
         @Override
         public void onBufferProgress(int percent, int beginPos, int endPos,
                                      String info) {
             // 合成进度
-//            mPercentForBuffering = percent;
-//            showTip(String.format(getString(R.string.tts_toast_format),
-//                    mPercentForBuffering, mPercentForPlaying));
+            //            mPercentForBuffering = percent;
+            //            showTip(String.format(getString(R.string.tts_toast_format),
+            //                    mPercentForBuffering, mPercentForPlaying));
         }
 
         @Override
         public void onSpeakProgress(int percent, int beginPos, int endPos) {
             // 播放进度
-//            mPercentForPlaying = percent;
-//            showTip(String.format(getString(R.string.tts_toast_format),
-//                    mPercentForBuffering, mPercentForPlaying));
+            //            mPercentForPlaying = percent;
+            //            showTip(String.format(getString(R.string.tts_toast_format),
+            //                    mPercentForBuffering, mPercentForPlaying));
         }
 
         @Override
         public void onCompleted(SpeechError error) {
             if (error == null) {
-//                showTip("播放完成");
+                //                showTip("播放完成");
             } else if (error != null) {
-//                showTip(error.getPlainDescription(true));
+                //                showTip(error.getPlainDescription(true));
             }
         }
 
@@ -136,13 +145,14 @@ public class SpeechServer {
 
     /**
      * 参数设置
+     *
      * @return
      */
-    private void setParam(){
+    private void setParam() {
         // 清空参数
         mTts.setParameter(SpeechConstant.PARAMS, null);
         // 根据合成引擎设置相应参数
-        if(mEngineType.equals(SpeechConstant.TYPE_CLOUD)) {
+        if (mEngineType.equals(SpeechConstant.TYPE_CLOUD)) {
             mTts.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_CLOUD);
             // 设置在线合成发音人
             mTts.setParameter(SpeechConstant.VOICE_NAME, voicer);
@@ -152,7 +162,7 @@ public class SpeechServer {
             mTts.setParameter(SpeechConstant.PITCH, "70");
             //设置合成音量
             mTts.setParameter(SpeechConstant.VOLUME, "50");
-        }else {
+        } else {
             mTts.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_LOCAL);
             // 设置本地合成发音人 voicer为空，默认通过语记界面指定发音人。
             mTts.setParameter(SpeechConstant.VOICE_NAME, "");
@@ -169,7 +179,7 @@ public class SpeechServer {
         // 设置音频保存路径，保存音频格式支持pcm、wav，设置路径为sd卡请注意WRITE_EXTERNAL_STORAGE权限
         // 注：AUDIO_FORMAT参数语记需要更新版本才能生效
         mTts.setParameter(SpeechConstant.AUDIO_FORMAT, "wav");
-        mTts.setParameter(SpeechConstant.TTS_AUDIO_PATH, Environment.getExternalStorageDirectory()+"/msc/tts.wav");
+        mTts.setParameter(SpeechConstant.TTS_AUDIO_PATH, Environment.getExternalStorageDirectory() + "/msc/tts.wav");
     }
 
 

@@ -30,7 +30,7 @@ public interface ApiService {
     //登录
     @FormUrlEncoded
     @POST(Constants.LOGIN)
-    Call<JsonObject> login(@Field("phone") String username, @Field("password") String pwd);
+    Call<JsonObject> login(@Field("phone") String username, @Field("password") String pwd,@Field("device_token") String device_token);
 
     //发送验证码
     @FormUrlEncoded

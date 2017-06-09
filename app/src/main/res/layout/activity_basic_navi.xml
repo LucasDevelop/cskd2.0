@@ -2,23 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
+                android:background="#fff"
                 android:layout_height="match_parent">
 
-    <!--<com.amap.api.maps2d.MapView-->
-        <!--android:id="@+id/map"-->
-        <!--android:visibility="gone"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"/>-->
 
     <com.amap.api.navi.AMapNaviView
-        android:id="@+id/map_navi"
+        android:id="@+id/navi_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorMain"
         android:padding="10dp">
 
         <ImageView
@@ -26,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:src="@mipmap/map_wode"/>
+            />
 
         <TextView
             android:id="@+id/title"
@@ -65,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
-                android:src="@mipmap/personal_touxiang"/>
+                />
 
             <LinearLayout
                 android:layout_weight="1"
@@ -79,7 +74,6 @@
                     android:layout_marginLeft="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:textSize="18sp"
                     tools:text="王小苗"/>
 
@@ -94,14 +88,14 @@
                         android:layout_width="8dp"
                         android:layout_margin="10dp"
                         android:layout_height="8dp"
-                        android:background="@drawable/shape_point_blue"/>
+                        />
 
                     <TextView
                         android:id="@+id/start_point"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="深圳宝安名优大厦"
-                        android:textColor="@color/black"/>
+                        />
                 </LinearLayout>
 
                 <LinearLayout
@@ -115,14 +109,14 @@
                         android:layout_width="8dp"
                         android:layout_height="8dp"
                         android:layout_margin="10dp"
-                        android:background="@drawable/shape_point_red"/>
+                        />
 
                     <TextView
                         android:id="@+id/end_point"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="深圳龙岗隆茂大厦"
-                        android:textColor="@color/black"/>
+                        />
                 </LinearLayout>
             </LinearLayout>
 
@@ -131,7 +125,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:src="@mipmap/map_xinxi"/>
+                />
 
             <ImageView
                 android:id="@+id/phone"
@@ -139,17 +133,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:src="@mipmap/map_dianhua"/>
+                />
         </LinearLayout>
 
         <Button
             android:id="@+id/submit"
-            style="@style/submitBt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="0dp"
             android:layout_marginRight="0dp"
-            android:background="@color/colorMain"
             android:text="到达上车地点"/>
     </LinearLayout>
 </RelativeLayout>
