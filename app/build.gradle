@@ -9,14 +9,22 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
+//            shrinkResources true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+//    defaultConfig {
+//        ndk {
+//            // 设置支持的SO库架构
+//            abiFilters 'armeabi' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+//        }
+//    }
 //    sourceSets {
 //        main {
 //            jniLibs.srcDirs = ['libs']
@@ -42,6 +50,7 @@ dependencies {
     compile files('libs/Amap_2DMap_V4.2.0_20170209.jar')
     compile files('libs/AMap_Search_V5.1.0_20170517.jar')
     compile files('libs/Sunflower.jar')
+    compile project(':SweetAlertLibrary')
     compile 'com.squareup.retrofit2:converter-gson:2.2.0'
     compile 'com.squareup.retrofit2:adapter-rxjava2:2.2.0'
     compile 'com.squareup.okhttp3:okhttp:3.6.0'
@@ -53,5 +62,8 @@ dependencies {
     compile 'com.android.support:design:26.0.0-alpha1'
     compile 'com.kyleduo.switchbutton:library:1.4.6'
     compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.tencent.bugly:crashreport:latest.release'
+    compile 'com.tencent.bugly:nativecrashreport:latest.release'
+    compile 'com.android.support:multidex:1.0.1'
     testCompile 'junit:junit:4.12'
 }

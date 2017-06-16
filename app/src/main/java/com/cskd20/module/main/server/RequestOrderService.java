@@ -10,14 +10,17 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.maps2d.model.LatLng;
 import com.cskd20.App;
+import com.cskd20.bean.LoginBean;
 import com.cskd20.factory.CallBack;
 import com.cskd20.factory.CommonFactory;
 import com.cskd20.utils.Constants;
 import com.cskd20.utils.LogUtils;
+import com.cskd20.utils.ResponseUtil;
 import com.cskd20.utils.SPUtils;
 import com.google.gson.JsonObject;
 
@@ -105,6 +108,11 @@ public class RequestOrderService extends Service implements LocationService.Loca
             Log.d("lucas", "停止接单任务");
         }
 
+        //手动抢单
+        public void startGetOrder(String order_id) {
+            mTimeTask.getOrder(order_id);
+        }
+
         public void setOrderListener(RequestOrderListener listener) {
             mListener = listener;
         }
@@ -146,6 +154,7 @@ public class RequestOrderService extends Service implements LocationService.Loca
         int count;
         private boolean mIsGrab;//是否抢单
         private String  mOrderId;
+        private boolean mIsGetOrder;
 
         public boolean isStart() {
             return mIsStart;
@@ -158,24 +167,37 @@ public class RequestOrderService extends Service implements LocationService.Loca
             mIsStart = true;
             String lng = mDriverLocation.longitude + "";
             String lat = mDriverLocation.latitude + "";
-            String orderType = (String) SPUtils.get(mContext, Constants.ORDER_TYPE, "[1]");
+            String orderType = (String) SPUtils.get(mContext, Constants.ORDER_TYPE, "1");
             String autoOrder = (String) SPUtils.get(mContext, Constants.AUTO_ORDER, "0");
-            String id = App.getUser().data.id;
+            LoginBean user = App.getUserExit();
+            if (user==null){
+                Toast.makeText(mContext, "用户未登录", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            String id = user.data.id;
             String orderId = "";
+            //自动接单
             if ("1".equals(autoOrder) && mIsGrab)
                 orderId = mOrderId;
-
+            //手动接单--开始接单
+            if (mIsGetOrder) {
+                orderId = mOrderId;
+            }
             mCall = CommonFactory.getApiInstance().getOrder(id, lng, lat, autoOrder, orderType, orderId);
             //            mCall = CommonFactory.getApiInstance().getOrder("1", "113.9865709127455",
-            // "22.46598997406529", "0", "[1," +
-            //                    "3,5]", "");
+            // "22.46598997406529", "0", "1," +
+            //                    "3,5", "");
             mCall.enqueue(new CallBack<JsonObject>() {
                 @Override
                 public boolean onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
                     if (mBind != null && mBind.mListener != null)
-                        if (mIsGrab)
+                        if (mIsGrab || mIsGetOrder) {
                             mBind.mListener.onGrabResponse(call, response);
-                        else
+                            mIsGetOrder = false;
+                            //如果订单被抢，取消任务
+                            if (ResponseUtil.getStatus(response.body()) == 0)
+                                mTimeTask.stopTask();
+                        } else
                             mBind.mListener.onResponse1(call, response);
                     return false;
                 }
@@ -184,6 +206,7 @@ public class RequestOrderService extends Service implements LocationService.Loca
                 public void onFailure1(Call<JsonObject> call, Throwable t) {
                     if (mBind != null && mBind.mListener != null)
                         mBind.mListener.onFailure1(call, t);
+                    mTimeTask.stopTask();
                 }
             });
             if ("0".equals(autoOrder) && mIsGrab) {
@@ -199,9 +222,17 @@ public class RequestOrderService extends Service implements LocationService.Loca
             mHandler.post(this);
         }
 
+        //自动下单
         public void grabOrder(String orderId) {
             mOrderId = orderId;
             mIsGrab = true;
+            mHandler.post(this);
+        }
+
+        //接单
+        public void getOrder(String orderId) {
+            mOrderId = orderId;
+            mIsGetOrder = true;
             mHandler.post(this);
         }
 

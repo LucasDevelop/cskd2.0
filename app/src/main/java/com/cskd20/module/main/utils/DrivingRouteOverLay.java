@@ -16,7 +16,6 @@ import com.amap.api.services.route.DrivePath;
 import com.amap.api.services.route.DriveStep;
 import com.amap.api.services.route.TMC;
 import com.cskd20.R;
-import com.cskd20.module.main.activity.MapNavActivity;
 import com.cskd20.utils.AMapUtil;
 
 import java.util.ArrayList;
@@ -117,9 +116,9 @@ public class DrivingRouteOverLay extends RouteOverlay {
                 endMarker = null;
             }
             // TODO: 2017/6/6 0006
-            if (status == MapNavActivity.RECEIVE)
-                addPassStartAndEndMarker();
-            else
+//            if (status == MapNavActivity.GOTO_PASS)
+//                addPassStartAndEndMarker();
+//            else
                 addDriveFromPassStartMarker();
             //添加中途经过点
             addThroughPointMarker();

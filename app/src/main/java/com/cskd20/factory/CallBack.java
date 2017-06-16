@@ -20,17 +20,17 @@ import retrofit2.Response;
 public abstract class CallBack<T> implements Callback<T> {
     @Override
     public void onResponse(Call<T> call, Response<T> response) {
+        Log.d("lucas_net", "call.request().url():" + call.request().url());
         if (response == null || response.body() == null) {
-            Log.e("net", "respense == null?");
+            Log.e("lucas_net", "respense == null?");
+            onFailure1(call,new Exception());
             return;
         }
-        Log.d("net", "call.request().url():" + call.request().url());
-        Log.d("net", "json:" + response.body().toString());
+        Log.d("lucas_net", "json:" + response.body().toString());
         if (response.body() instanceof JsonObject) {
             int status = ResponseUtil.getStatus((JsonObject) response.body());
             boolean isToast = false;
-            if (status >= 1)
-                isToast = onResponse1(call, response);
+            isToast = onResponse1(call, response);
             //如果获取数据失败
             if (status == 0) {
                 if (isToast)
@@ -42,7 +42,7 @@ public abstract class CallBack<T> implements Callback<T> {
 
     @Override
     public void onFailure(Call<T> call, Throwable t) {
-        Log.d("net", "url:" + call.request().url());
+        Log.d("lucas_net", "url:" + call.request().url());
         t.printStackTrace();
         onFailure1(call, t);
     }

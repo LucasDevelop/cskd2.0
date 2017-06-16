@@ -42,7 +42,7 @@
         android:layout_below="@id/text1"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="11dp"
-        android:text="请输入188***1154的短信4位验证码"
+        android:text="@string/_188_1154_4"
         android:textColor="#bbb"/>
 
     <LinearLayout

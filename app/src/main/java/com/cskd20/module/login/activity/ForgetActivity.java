@@ -3,7 +3,9 @@ package com.cskd20.module.login.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -61,7 +63,15 @@ public class ForgetActivity extends BaseActivity {
     protected void initView(@Nullable Bundle savedInstanceState) {
         mTopImg.setImageResource(icons[mPage]);
         mText1.setText(text1s[mPage]);
-        mText2.setText(text2s[mPage]);
+        if (mPage==2)
+            mEditText.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        if (mPage == 1) {
+            String phone = mIntent.getStringExtra("phone");
+            String s = phone.substring(0,3) + "***" + phone.substring(phone.length() - 4);
+            mText2.setText(String.format(getResources().getString(R.string._188_1154_4), s));
+            Log.d("lucas", s);
+        } else
+            mText2.setText(text2s[mPage]);
         if (mPage == 2)
             mNext.setText("完成");
     }
@@ -97,6 +107,10 @@ public class ForgetActivity extends BaseActivity {
         String check = check();
         if (check == null)
             return;
+        if (!mEditText.getText().toString().trim().matches("[A-Za-z0-9]{6,20}")) {
+            Toast.makeText(mContext, "请输入6-20位包含数字和字母的密码", Toast.LENGTH_SHORT).show();
+            return;
+        }
         mApi.modifPwd(mIntent.getStringExtra("phone"), check).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -117,10 +131,11 @@ public class ForgetActivity extends BaseActivity {
 
     //校验验证码
     private void checkCode() {
+        String phone = mIntent.getStringExtra("phone");
         String check = check();
         if (check == null)
             return;
-        mApi.checkCode(mIntent.getStringExtra("phone"), check, 1).enqueue(new Callback<JsonObject>() {
+        mApi.checkCode(phone, check, 1).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (ResponseUtil.getStatus(response.body()) == 1) {

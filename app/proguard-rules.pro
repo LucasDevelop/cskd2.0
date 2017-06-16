@@ -63,3 +63,7 @@
    public static *** i(...);
    public static *** w(...);
  }
+
+ #bugly
+ -dontwarn com.tencent.bugly.**
+ -keep public class com.tencent.bugly.**{*;}

@@ -27,10 +27,16 @@ import retrofit2.http.Query;
 
 public interface ApiService {
 
+    //检查版本
+    @FormUrlEncoded
+    @POST(Constants.VERSION_UPDATE)
+    Call<JsonObject> checkVersion(@Field("version") String version,@Field("client_type") int client_type);
+
     //登录
     @FormUrlEncoded
     @POST(Constants.LOGIN)
-    Call<JsonObject> login(@Field("phone") String username, @Field("password") String pwd,@Field("device_token") String device_token);
+    Call<JsonObject> login(@Field("phone") String username, @Field("password") String pwd, @Field("device_token")
+            String device_token,@Field("client_type") int client_type);
 
     //发送验证码
     @FormUrlEncoded
@@ -86,10 +92,14 @@ public interface ApiService {
 
     //返回价格详情
     @FormUrlEncoded
-    @POST(Constants.push_price_info)
+    @POST(Constants.PUSH_PRICE_INFO)
     Call<JsonObject> pushPriceInfo(@Field("order_id") String orderId, @Field("token") String token,
                                    @Field("mem_type_id") String memTypeId, @Field("total_km") String totalKm,
-                                   @Field("areas") String areas, @Field("gotime") String goTime);
+                                   @Field("areas") String areas);
 
-
+    //提交高速价格
+    @FormUrlEncoded
+    @POST(Constants.PUSH_TOLL_FEE)
+    Call<JsonObject> pushTollFee(@Field("order_id") String orderId,@Field("token") String token
+    ,@Field("expy_charge") String expyCharge,@Field("total_km") String totalKm,@Field("area_id") String areaId);
 }

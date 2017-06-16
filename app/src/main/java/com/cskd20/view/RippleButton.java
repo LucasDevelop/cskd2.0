@@ -105,6 +105,8 @@ public class RippleButton extends LinearLayout implements View.OnClickListener {
     }
 
     private void cancelWaveAnimation() {
+        handler.removeMessages(0x222);
+        handler.removeMessages(0x333);
         mIsStart = false;
         wave1.clearAnimation();
         wave2.clearAnimation();

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 
+import com.cskd20.utils.SPUtils;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.SpeechConstant;
@@ -58,7 +59,9 @@ public class SpeechServer {
     }
 
     public void startSpeek(String speekMsg) {
-
+        boolean isSpeck = (boolean) SPUtils.get(mContext, "isSpeck", true);
+        if (!isSpeck)
+            return;
         // 开始合成
         // 收到onCompleted 回调时，合成结束、生成合成音频
         // 合成的音频格式：只支持pcm格式

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -23,6 +22,7 @@ import com.umeng.message.PushAgent;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static anet.channel.util.Utils.context;
 
@@ -41,6 +41,7 @@ public abstract class BaseActivity extends AppCompatActivity implements LoadingI
     private LoadingPop mLoadingPop;
     private View       mRootView;
     public Handler mHandler = new Handler();
+    private SweetAlertDialog mSweetAlertDialog;
 
 
     @Override
@@ -75,16 +76,12 @@ public abstract class BaseActivity extends AppCompatActivity implements LoadingI
         //        //给所有的按钮添加点击事件
         //        UIUtils.setViewClickListener(view, this);
         //将活动页面添加到容器中
-
         if (!mActivities.contains(this)) {
             mActivities.add(this);
         }
-
-//        mLoadingPop = new LoadingPop(this);
-
     }
 
-    protected void exit() {
+    public void exit() {
         for (int i = 0; i < mActivities.size(); i++) {
             mActivities.get(i).finish();
         }
@@ -92,20 +89,19 @@ public abstract class BaseActivity extends AppCompatActivity implements LoadingI
 
     @Override
     public void show() {
-        if (mLoadingPop != null && !mLoadingPop.isShowing()) {
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mLoadingPop.showAtLocation(mRootView, Gravity.CENTER, 0, 0);
-                }
-            }, 100);
+        if (mSweetAlertDialog == null) {
+            mSweetAlertDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+            mSweetAlertDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.colorMain));
+            mSweetAlertDialog.setTitleText("loading..");
+            mSweetAlertDialog.setCancelable(false);
         }
+        mSweetAlertDialog.show();
     }
 
     @Override
     public void hide() {
-        if (mLoadingPop != null && mLoadingPop.isShowing())
-            mLoadingPop.dismiss();
+        if (mSweetAlertDialog != null & mSweetAlertDialog.isShowing())
+            mSweetAlertDialog.cancel();
     }
 
     @Override

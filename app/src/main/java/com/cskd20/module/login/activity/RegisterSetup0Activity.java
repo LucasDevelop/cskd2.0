@@ -19,11 +19,11 @@ import com.cskd20.bean.SendCodeBean;
 import com.cskd20.factory.CommonFactory;
 import com.cskd20.utils.CommonUtil;
 import com.cskd20.utils.ResponseUtil;
-import com.cskd20.utils.SPUtils;
 import com.google.gson.JsonObject;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,6 +43,8 @@ public class RegisterSetup0Activity extends BaseActivity {
     EditText mCode;
     @Bind(R.id.send_code)
     TextView mSendCode;
+    @Bind(R.id.alert)
+    TextView mAlert;
 
     Handler mHandler = new Handler();
     private TimeTask mTimeTask;
@@ -64,7 +66,7 @@ public class RegisterSetup0Activity extends BaseActivity {
                 sendCode();
                 break;
             case R.id.register:
-//                startActivity(new Intent(mContext,RegisterSetup1Activity.class));
+//                                startActivity(new Intent(mContext,RegisterSetup1Activity.class));
                 String phone = checkPhone();
                 if (phone == null)
                     return;
@@ -73,6 +75,29 @@ public class RegisterSetup0Activity extends BaseActivity {
             default:
                 break;
         }
+    }
+
+    @OnTextChanged(R.id.login_name)
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        String phone = s.toString();
+        if (CommonUtil.isMobileNO(phone)) {
+            //检查手机号是否注册
+            mApi.checkPhone(phone, 1 + "").enqueue(new Callback<CheckPhoneBean>() {
+                @Override
+                public void onResponse(Call<CheckPhoneBean> call, Response<CheckPhoneBean> response) {
+                    if (response.body().status == 1) {
+                        Log.d("lucas", "改手机号已注册");
+                        mAlert.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<CheckPhoneBean> call, Throwable t) {
+
+                }
+            });
+        }
+        mAlert.setVisibility(View.GONE);
     }
 
     //检查手机号是否注册
@@ -111,27 +136,32 @@ public class RegisterSetup0Activity extends BaseActivity {
             Toast.makeText(mContext, "密码不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (pwd.length() < 6 || pwd.length() > 16) {
-            Toast.makeText(mContext, "请输入6-16密码", Toast.LENGTH_SHORT).show();
+        if (!pwd.matches("[A-Za-z0-9]{6,20}")) {
+            Toast.makeText(mContext, "请输入6-20位包含数字和字母的密码", Toast.LENGTH_SHORT).show();
             return;
         }
+        show();
         mApi.register(phone, pwd, code, 0 + "")
                 .enqueue(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                        Log.d("lucas","json:"+ response.body().toString());
-                        if (ResponseUtil.getStatus(response.body())==1){
+                        Log.d("lucas", "json:" + response.body().toString());
+                        if (ResponseUtil.getStatus(response.body()) == 1) {
                             RegisterBean registerBean = CommonFactory.getGsonInstance().fromJson(response.body()
                                     .toString(), RegisterBean.class);
-                            SPUtils.put(mContext,"token",registerBean.data.token);
                             //注册成功跳转到信息完善界面
-                            startActivity(new Intent(mContext,RegisterSetup1Activity.class));
-                        }else
+                            Intent intent = new Intent(mContext, RegisterSetup1Activity.class);
+                            intent.putExtra("token",registerBean.data.token);
+                            startActivity(intent);
+                            finish();
+                        } else
                             Toast.makeText(mContext, ResponseUtil.getMsg(response.body()), Toast.LENGTH_SHORT).show();
+                        hide();
                     }
 
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable t) {
+                        hide();
                         Toast.makeText(mContext, "网络错误", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -210,7 +240,7 @@ public class RegisterSetup0Activity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mTimeTask!=null)
-        mTimeTask.stop();
+        if (mTimeTask != null)
+            mTimeTask.stop();
     }
 }

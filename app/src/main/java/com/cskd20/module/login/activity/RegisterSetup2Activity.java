@@ -1,6 +1,7 @@
 package com.cskd20.module.login.activity;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,6 +19,7 @@ import com.cskd20.base.BaseActivity;
 import com.cskd20.bean.ImageTag;
 import com.cskd20.bean.InfoBean;
 import com.cskd20.factory.CallBack;
+import com.cskd20.factory.ImageFactory;
 import com.cskd20.popup.LoadingPop;
 import com.cskd20.popup.PictureSelectPopup;
 import com.cskd20.utils.CommonUtil;
@@ -142,7 +144,6 @@ public class RegisterSetup2Activity extends BaseActivity implements View.OnClick
         mInfo.id_card_logo = mPhoto1Tag.url;
         mInfo.driver_no_logo = mPhoto2Tag.url;
         mInfo.driving_logo = mPhoto3Tag.url;
-        mInfo.token = (String) SPUtils.get(mContext, "token", "");
 
 
         HashMap<String, String> map = new HashMap<>();
@@ -166,11 +167,13 @@ public class RegisterSetup2Activity extends BaseActivity implements View.OnClick
             @Override
             public boolean onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
                 Toast.makeText(mContext, ResponseUtil.getMsg(response.body()), Toast.LENGTH_SHORT).show();
+                if (ResponseUtil.getStatus(response.body()) == 0)
+                    return false;
                 JSONObject jsonObject = ResponseUtil.Jsb2JSb(response.body());
                 try {
                     String token = jsonObject.getJSONObject("data").getString("token");
                     SPUtils.put(mContext, "token", token);
-                    startActivity(new Intent(RegisterSetup2Activity.this,RegisterSetup3Activity.class));
+                    startActivity(new Intent(RegisterSetup2Activity.this, RegisterSetup3Activity.class));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -274,12 +277,32 @@ public class RegisterSetup2Activity extends BaseActivity implements View.OnClick
     //上传图片
     private void uploadPic(final Uri uri, final RelativeLayout tempView) {
         File file = new File(CommonUtil.getRealPathFromURI(mContext, uri));
-        // 创建 RequestBody，用于封装构建RequestBody
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         String filePath = CommonUtil.getRealPathFromURI(mContext, uri);
         String fileName = filePath.substring(filePath.lastIndexOf("/") + 1, filePath.length());
+        //对图片做质量压缩
+        File file1 = new File(filePath);
+        long length = file1.length();
+        if (length > 1024 * 400) {
+            try {
+                String outPath = getCacheDir().getPath() +
+                        System.currentTimeMillis() + ".png";
+                new ImageFactory().compressAndGenImage(BitmapFactory.decodeFile(filePath), "/"+outPath, 400);
+            file = new File(outPath);
+                long length1 = file.length();
+                Log.d("lucas", "压缩后图片大小kb:" + length1/1024);
+            } catch (IOException e) {
+                Log.e("lucas", "图片压缩失败");
+                e.printStackTrace();
+            }
+        }
+        // 创建 RequestBody，用于封装构建RequestBody
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         // MultipartBody.Part  和后端约定好Key，这里的partName是用image
         MultipartBody.Part body = MultipartBody.Part.createFormData("pic", fileName, requestFile);
+        pushImg(uri, tempView, body);
+    }
+
+    private void pushImg(final Uri uri, final RelativeLayout tempView, MultipartBody.Part body) {
         mApi.uploadImg(body).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -300,7 +323,8 @@ public class RegisterSetup2Activity extends BaseActivity implements View.OnClick
                     delayHide();
                 }
                 tempView.setTag(tag);
-//                Toast.makeText(mContext, ResponseUtil.getMsg(response.body()), Toast.LENGTH_SHORT).show();
+                //                Toast.makeText(mContext, ResponseUtil.getMsg(response.body()), Toast.LENGTH_SHORT)
+                // .show();
             }
 
             @Override
@@ -312,7 +336,7 @@ public class RegisterSetup2Activity extends BaseActivity implements View.OnClick
                 mLoadingPop.setIcon(R.mipmap.ic_fail);
                 delayHide();
                 t.printStackTrace();
-//                Toast.makeText(mContext, "上传失败", Toast.LENGTH_SHORT).show();
+                //                Toast.makeText(mContext, "上传失败", Toast.LENGTH_SHORT).show();
             }
         });
     }

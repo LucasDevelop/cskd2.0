@@ -3,16 +3,17 @@ package com.cskd20.module.main.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cskd20.R;
 import com.cskd20.base.BaseActivity;
 import com.cskd20.bean.ArriveBean;
 import com.cskd20.bean.OrderBean;
 import com.cskd20.factory.CallBack;
+import com.cskd20.utils.ResponseUtil;
 import com.cskd20.utils.SPUtils;
 import com.google.gson.JsonObject;
 
@@ -43,6 +44,8 @@ public class OrderInfoActivity extends BaseActivity {
 
 
     private OrderBean mOrder;
+    private int       mKm;
+    private String    mCity;
 
     @Override
     protected int setContentView() {
@@ -53,22 +56,24 @@ public class OrderInfoActivity extends BaseActivity {
     protected void initView(@Nullable Bundle savedInstanceState) {
         Intent intent = getIntent();
         mOrder = (OrderBean) intent.getSerializableExtra("order");
-        String city = intent.getStringExtra("city");
-        String time = intent.getStringExtra("time");
-        int km = intent.getIntExtra("km", -1);
+        mCity = intent.getStringExtra("city");
+        mKm = intent.getIntExtra("km", -1);
         mStartTV.setText(mOrder.data.start_place);
         mEndTV.setText(mOrder.data.end_place);
-        mLength.setText("里程" + km + "公里");
-        initData(city, km, time);
+        mLength.setText("里程" + mKm + "公里");
+        initData(mCity, mKm);
     }
 
-    private void initData(String city, int km, String time) {
+    private void initData(String city, int km) {
         show();
-        mApi.pushPriceInfo(mOrder.data.order_id, (String) SPUtils.get(mContext, "token", "")
-                , 2 + "", km + "", city, time).enqueue(new CallBack<JsonObject>() {
+        String token = (String) SPUtils.get(mContext, "token", "");
+        mApi.pushPriceInfo(mOrder.data.order_id, token
+                , 2 + "", km + "", city).enqueue(new CallBack<JsonObject>() {
             @Override
             public boolean onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
                 hide();
+                if (ResponseUtil.getStatus(response.body()) == 0)
+                    return false;
                 ArriveBean arriveBean = mGson.fromJson(response.body().toString(), ArriveBean.class);
                 mChanrging.setText(arriveBean.data.total_money + "元");
                 mLengthCharging.setText(arriveBean.data.km_money + "元");
@@ -96,9 +101,26 @@ public class OrderInfoActivity extends BaseActivity {
 
     private void sendDate() {
         String exp = mExp.getText().toString().trim();
-        if (Double.parseDouble(exp)<0){
-            Toast.makeText(mContext, "高速费不能为负数", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        //        if (!TextUtils.isEmpty(exp))
+        //        if (Double.parseDouble(exp)<0){
+        //            Toast.makeText(mContext, "高速费不能为负数", Toast.LENGTH_SHORT).show();
+        //            return;
+        //        }
+        String token = (String) SPUtils.get(mContext, "token", "");
+        show();
+        mApi.pushTollFee(mOrder.data.order_id, token, exp + "", mKm + "", mCity).enqueue(new CallBack<JsonObject>() {
+            @Override
+            public boolean onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
+                Log.d("lcuas", ResponseUtil.getMsg(response.body()));
+                finish();
+                hide();
+                return false;
+            }
+
+            @Override
+            public void onFailure1(Call<JsonObject> call, Throwable t) {
+                hide();
+            }
+        });
     }
 }

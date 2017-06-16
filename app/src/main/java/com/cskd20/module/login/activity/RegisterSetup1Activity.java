@@ -21,6 +21,7 @@ import com.cskd20.bean.CarTypeBean;
 import com.cskd20.bean.InfoBean;
 import com.cskd20.factory.CallBack;
 import com.cskd20.factory.CommonFactory;
+import com.cskd20.utils.ResponseUtil;
 import com.cskd20.utils.SPUtils;
 import com.google.gson.JsonObject;
 
@@ -91,6 +92,8 @@ public class RegisterSetup1Activity extends BaseActivity implements AdapterView.
         mApi.getCarType("").enqueue(new CallBack<JsonObject>() {
             @Override
             public boolean onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
+                if (ResponseUtil.getStatus(response.body())==0)
+                    return false;
                 CarTypeBean bean = CommonFactory.getGsonInstance().fromJson(response.body().toString(),
                         CarTypeBean.class);
                 mList1.add("品牌");
@@ -117,6 +120,8 @@ public class RegisterSetup1Activity extends BaseActivity implements AdapterView.
         mApi.getCarType(s).enqueue(new CallBack<JsonObject>() {
             @Override
             public boolean onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
+                if (ResponseUtil.getStatus(response.body())==0)
+                    return false;
                 CarType2Bean bean = CommonFactory.getGsonInstance().fromJson(response.body().toString(),
                         CarType2Bean.class);
                 mList2.clear();
@@ -145,8 +150,7 @@ public class RegisterSetup1Activity extends BaseActivity implements AdapterView.
         switch (view.getId()) {
             case R.id.next:
                 saveInfo();
-                //                                                startActivity(new Intent(this,
-                // RegisterSetup2Activity.class));
+//                startActivity(new Intent(this, RegisterSetup2Activity.class));
                 break;
             case R.id.insurance_start://车险起始时间
                 showPickerDate(R.id.insurance_start);
@@ -224,6 +228,7 @@ public class RegisterSetup1Activity extends BaseActivity implements AdapterView.
         mInfoBean.start_insurance = insuranceStart;
         mInfoBean.end_insurance = insuranceEnd;
         mInfoBean.car_regist_time = carRegisterDate;
+        mInfoBean.token = getIntent().getStringExtra("token");
         Intent intent = new Intent(this, RegisterSetup2Activity.class);
         intent.putExtra("info", mInfoBean);
         startActivity(intent);

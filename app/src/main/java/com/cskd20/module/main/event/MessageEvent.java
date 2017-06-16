@@ -7,12 +7,17 @@ package com.cskd20.module.main.event;
  */
 
 public class MessageEvent {
+    public String action;
     public Object obj1;
     public Object obj2;
     public Object obj3;
     public Object obj4;
 
     public MessageEvent() {
+    }
+
+    public MessageEvent(String action) {
+        this.action = action;
     }
 
     public MessageEvent(Object obj1) {

@@ -1,8 +1,10 @@
 <resources>
-    <string name="app_name">城市快道</string>
+    <string name="app_name">城市快道司机</string>
     <string name="next">下一步</string>
     <string name="welcome">欢迎来到城市快道，您可以设置接单模式，也可以在个人设置中关闭语音播报功能！</string>
     <string name="startaking_auto">开始自动接单了</string>
     <string name="startaking">开始手动接单了，您可以在模式设置中打开自动接单，我们将为您自动分配附近乘客订单</string>
+    <string name="_188_1154_4">请输入%s的短信4位验证码</string>
+    <string name="title_activity_setup">SetupActivity</string>
     <!--<string name="taking_success">您已接取尾号%d的用户，距您%d公里，从</string>-->
 </resources>

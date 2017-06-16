@@ -21,11 +21,13 @@ import com.cskd20.base.BaseFragment;
 import com.cskd20.bean.OrderBean;
 import com.cskd20.module.main.activity.MapNavActivity;
 import com.cskd20.module.main.activity.ModeSettingActivity;
+import com.cskd20.module.main.activity.OrderListActivity;
 import com.cskd20.module.main.event.MessageEvent;
 import com.cskd20.module.main.server.RequestOrderService;
 import com.cskd20.module.main.server.SpeechServer;
 import com.cskd20.popup.OrderPopup;
 import com.cskd20.utils.Constants;
+import com.cskd20.utils.ResponseUtil;
 import com.cskd20.utils.SPUtils;
 import com.cskd20.view.RippleButton;
 import com.google.gson.JsonObject;
@@ -88,7 +90,6 @@ public class MainFragment extends BaseFragment implements OrderPopup.OnCloseList
         mSpeechServer = new SpeechServer(getActivity());
         mSearch.setOnclickListener1(new View.OnClickListener() {
             int count = 0;
-
             @Override
             public void onClick(View v) {
                 if (currentStatus == RECEIVE_ORDER) {//收到订单
@@ -96,10 +97,10 @@ public class MainFragment extends BaseFragment implements OrderPopup.OnCloseList
                     if (mOrderBind != null) {
                         if (mModel.equals("0")) {
                             //手动接单
-                            mOrderBind.startGrabOrder(mOrderBean.data.order_id);
+                            mOrderBind.startGetOrder(mOrderBean.data.order_id);
                         } else {
                             //自动接单
-                            openMap();
+                            mOrderBind.startGrabOrder(mOrderBean.data.order_id);
                         }
                     }
                 } else {
@@ -125,6 +126,9 @@ public class MainFragment extends BaseFragment implements OrderPopup.OnCloseList
         Intent intent = new Intent(getActivity(), MapNavActivity.class);
         intent.putExtra("order", mOrderBean);
         startActivity(intent);
+        //停止接单
+        if (mOrderBind!=null)
+        mOrderBind.stopRequest();
         mPopup.dismiss();
         mSearch.stop();
         mStartText.setText("出车");
@@ -147,6 +151,8 @@ public class MainFragment extends BaseFragment implements OrderPopup.OnCloseList
     private RequestOrderService.RequestOrderListener mOrderListener = new RequestOrderService.RequestOrderListener() {
         @Override
         public void onResponse1(Call<JsonObject> call, Response<JsonObject> response) {
+            if (ResponseUtil.getStatus(response.body())==0)
+                return;
             mOrderBean = mGson.fromJson(response.body().toString(), OrderBean.class);
             currentStatus = RECEIVE_ORDER;
             if (mModel.equals("0"))
@@ -205,6 +211,7 @@ public class MainFragment extends BaseFragment implements OrderPopup.OnCloseList
                 startActivity(new Intent(getActivity(), ModeSettingActivity.class));
                 break;
             case R.id.order:
+                startActivity(new Intent(getActivity(), OrderListActivity.class));
                 break;
         }
     }
@@ -212,6 +219,8 @@ public class MainFragment extends BaseFragment implements OrderPopup.OnCloseList
     //当用户关闭订单弹窗
     @Override
     public void onClose(OrderBean bean) {
+        currentStatus = TAKING;
+        mStartText.setText("接单中");
         mOrderBind.startRequest(true);
     }
 
